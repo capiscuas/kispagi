@@ -16,6 +16,13 @@ cd kispagi
 ### Installing Requirements
     pip install flask requests python-dateutil python-slugify
 
+### Configuring settings
+Create a file **env/settings.py** which will contain the following content:
+    ocp_token = "REPLACE_BY_THE_VALUENETWORK USER TOKEN"
+    ocp_host = "REPLACE BY THE VALUENETWORK GRAPHEN API URL"
+    gitlab_host = 'GITLAB API URL'
+    gitlab_token = 'GITLAB USER TOKEN'
+
 ### Running
     cd flask_app
 > **Note:**
@@ -26,8 +33,7 @@ cd kispagi
 Then open your browser at http://127.0.0.1:5000/
 
 ## Supported platforms
-### Valuenetwork 
+### Valuenetwork
 * [<i class="icon-refresh"></i> Repository](https://github.com/FreedomCoop/valuenetwork/)
 ### Gitlab
 * [<i class="icon-file"></i> Website](https://about.gitlab.com/)
-
