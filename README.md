@@ -2,8 +2,8 @@
 Kispagi (which means to pay with kisses in Esperanto) is an app that connects to your favourite(s) issue tracker or project manager(gitlab, etc) to calculate the contributed hours and calculate a payment distribution with different rules.
 
 ## How to install it
-git clone git@github.com:capiscuas/kispagi.git kispagi
-cd kispagi
+    git clone git@github.com:capiscuas/kispagi.git kispagi
+    cd kispagi
 
 ### Create a python virtualenv
     export LC_ALL=C # in case you get error when creating the virtualenv
@@ -18,6 +18,7 @@ cd kispagi
 
 ### Configuring settings
 Create a file **env/settings.py** which will contain the following content:
+
     ocp_token = "REPLACE_BY_THE_VALUENETWORK USER TOKEN"
     ocp_host = "REPLACE BY THE VALUENETWORK GRAPHEN API URL"
     gitlab_host = 'GITLAB API URL'
