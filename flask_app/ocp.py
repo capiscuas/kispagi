@@ -37,7 +37,7 @@ class OCPConnector(object):
                             committedInputs { note id fulfilledBy { fulfilledBy { id }}}
                             inputs {
                               id start
-                              provider {id name} action note requestDistribution
+                              provider {id name faircoinAddress} action note requestDistribution
                               affectedQuantity{ numericValue unit {name}} note
                             }
                             processClassifiedAs {name} plannedDuration isFinished note
@@ -60,6 +60,7 @@ class OCPConnector(object):
     def parse_issues(self, issues, project_id, date_min, date_max):
         contributions = []
         processes = issues["data"]["viewer"]["agent"]["agentProcesses"]
+        ocp_users = {}
         for p in processes:
             web_url = 'https://ocp.freedomcoop.eu/work/process-logging/{0}/'.format(p['id'])
             process_work = {}
@@ -97,6 +98,10 @@ class OCPConnector(object):
                         i = inputs[w_id]
                         # user_id = i['provider']['id']
                         username = slugify(i['provider']['name']).replace("-", "_")
+                        user_id = i['provider']['id']
+                        user_faircoinaddress = i['provider']['faircoinAddress']
+                        if username not in ocp_users:
+                            ocp_users[username] = {"id": user_id, "faircoinAddress": user_faircoinaddress}
                         # username = get_unique_username(key='ocp_id', value=user_id)
                         # if not username:
                         if _is_validated_comment(i['note']):
@@ -210,4 +215,4 @@ class OCPConnector(object):
                                               'events': c['events'],
                                               'total_time_spent': c['seconds_spent']})
 
-        return contributions
+        return contributions, ocp_users
