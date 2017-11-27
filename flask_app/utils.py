@@ -97,16 +97,16 @@ def _parse_calculate_data(data):
     return settings, areas, users
 
 
-users_db = [{'ocp_id': '24', 'ocp_username': 'Maro', 'gitlab': 'Marohf'},
-            {'ocp_id': '108', 'ocp_username': 'ivan_garcia', 'gitlab': 'kapis'},
-            {'ocp_id': '108', 'ocp_username': 'pilikum_l_kerill', 'gitlab': 'pilikum'},
-            {'ocp_id': '108', 'ocp_username': 'teresa_sempere', 'gitlab': 'tereseta'},
-            {'ocp_id': '', 'ocp_username': 'guy_james', 'gitlab': 'guyjames'},
-            {'ocp_id': '', 'ocp_username': 'mario', 'gitlab': 'MarioLiebrenz'},
-            {'ocp_id': '', 'ocp_username': 'chris_zumbrunn', 'gitlab': 'zumbrunn'},
-            {'ocp_id': '', 'ocp_username': 'alex_berbel', 'gitlab': 'al-demon1'},
-            {'ocp_id': '', 'ocp_username': 'vieillescaze_serge', 'gitlab': 'serge.vi'},
-            {'ocp_id': '', 'ocp_username': 'onix228', 'gitlab': 'onix228'}]
+users_db = [{'ocp_username': 'Maro', 'gitlab': 'Marohf'},
+            {'ocp_username': 'ivan_garcia', 'gitlab': 'kapis'},
+            {'ocp_username': 'pilikum_l_kerill', 'gitlab': 'pilikum'},
+            {'ocp_username': 'teresa_sempere', 'gitlab': 'tereseta'},
+            {'ocp_username': 'guy_james', 'gitlab': 'guyjames'},
+            {'ocp_username': 'mario', 'gitlab': 'MarioLiebrenz'},
+            {'ocp_username': 'chris_zumbrunn', 'gitlab': 'zumbrunn'},
+            {'ocp_username': 'alex_berbel', 'gitlab': 'al-demon1'},
+            {'ocp_username': 'vieillescaze_serge', 'gitlab': 'serge.vi'},
+            {'ocp_username': 'onix228', 'gitlab': 'onix228'}]
 
 validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
 
@@ -135,56 +135,37 @@ def get_unique_username(key=None, value=None):
 
 fixed_month_values = {
     '09-2017': {'budget-faircoins': 6444.4444,
-                'users': [{'username': 'maro', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': True},
-                          {'username': 'javier_mckleyn', 'fix_hours': 40, 'fix_income': 250,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': True},
-                          {'username': 'edgar_nomada', 'fix_hours': 168, 'fix_income': 1050,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': False},
-                          {'username': 'santi', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'fairmarket', 'already_paid': True},
-                          {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': True},
-                          {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': True}]},
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 40, 'fix_income': 250, 'area': 'commonmanagement'},
+                    {'username': 'edgar_nomada', 'fix_hours': 168, 'fix_income': 1050, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 80, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'}]},
+
     '10-2017': {'budget-faircoins': 11111.12,
-                'users': [{'username': 'maro', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': True},
-                          {'username': 'javier_mckleyn', 'fix_hours': 40, 'fix_income': 250,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': True},
-                          {'username': 'edgar_nomada', 'fix_hours': 56, 'fix_income': 350,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': True},
-                          {'username': 'santi', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'fairmarket', 'already_paid': True},
-                          {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': True},
-                          {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': True},
-                          {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'circulareconomy', 'already_paid': True},
-                          {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'circulareconomy', 'already_paid': False}]},
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 40, 'fix_income': 250, 'area': 'commonmanagement'},
+                    {'username': 'edgar_nomada', 'fix_hours': 56, 'fix_income': 350, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 80, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'}]},
+
     '11-2017': {'budget-faircoins': 11111.12,
-                'users': [{'username': 'maro', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': False},
-                          {'username': 'javier_mckleyn', 'fix_hours': 100, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'commonmanagement', 'already_paid': False},
-                          {'username': 'santi', 'fix_hours': 80, 'fix_income': 600,
-                           'volunteer_hours': 0, 'area': 'fairmarket', 'already_paid': False},
-                          {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': False},
-                          {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': False},
-                          {'username': 'onix228', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': False},
-                          {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750,
-                           'volunteer_hours': 0, 'area': 'techarea', 'already_paid': False},
-                          {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'circulareconomy', 'already_paid': False},
-                          {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500,
-                           'volunteer_hours': 0, 'area': 'circulareconomy', 'already_paid': False},
-                          {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300,
-                           'volunteer_hours': 0, 'area': 'communication', 'already_paid': False}]}
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 100, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 80, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'onix228', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300, 'area': 'communication'}]}
 }
 
 
