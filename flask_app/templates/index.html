@@ -240,14 +240,25 @@ $(document).ready(function() {
     })
 
     $('[data-toggle="popover"]').popover();
-
 });
+
 function populateResults(results) {
        if(results.hasOwnProperty('users')){
             $html_users = '';
             $.each( results['users'], function( username, userdata ) {
                 $html_users += '<tr>';
-                $html_users += '<td>' + username + '</td>';
+                faircoinAddress = '';
+                link_profile = '';
+
+                if(userdata.hasOwnProperty('faircoinAddress')) {faircoinAddress = userdata['faircoinAddress']}
+                if(userdata.hasOwnProperty('id')) {
+                    link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['id'];
+                    $html_users += '<td><a target="_blank" href="'+ link_profile + '">'+ username + '</a><br/>'+ faircoinAddress +'</td>';
+                }
+                else{
+                    $html_users += '<td>'+username+'</td>';
+                }
+
                 $html_users += '<td data-order=' + userdata['final_payment'] + '>' + userdata['payment_detail'] + '</td>';
                 $html_users += '<td data-order=' + userdata['percentage'] + '>' + userdata['percentage'] + '% </td>';
                 $html_users += '<td data-order=' + userdata['fixed_time'] + '>' + toHHMMSS(userdata['fixed_time']) + '</td>';
@@ -299,7 +310,7 @@ $("#calculateBtn").click(function() {
           <table id="all-users-table" style="display: none; " class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
               <thead> <tr>
                   <th>User</th>
-                  <th>Final payment</th>
+                  <th width="350px">Final payment</th>
                   <th>Percentage</th>
                   <th>Fixed income time</th>
                   <th>Freelance tasks time</th>
