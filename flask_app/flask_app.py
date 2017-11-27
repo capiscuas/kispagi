@@ -30,8 +30,10 @@ areas = [
     {'id': 'kispagi', 'name': 'Kispagi tool for OCW', 'gitlab': [35], 'ocp': [None]},
     {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]}
 ]
+
+# For faster testing only
 # areas = [
-#     {'id': 'welcome', 'name': 'welcome', 'gitlab': [None], 'ocp': [455]}
+#     {'id': 'testing', 'name': 'testing', 'gitlab': [None], 'ocp': [455]}
 # ]
 
 
@@ -122,7 +124,7 @@ def calculate():
                             username, int(final_payment), settings['max-month'])
                         alerts.append({'type': 'warning', 'msg': alert})
                         u['final_payment'] = settings['max-month']
-                        u['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1}f)</font> \
+                        u['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1} ƒ)</font> \
                                                <font color="red">MAX!</font> < {2}'.format(
                             settings['max-month'],
                             float2dec(settings['max-month'] / fair2eur_price),
@@ -136,7 +138,7 @@ def calculate():
                     else:
                         u['final_payment'] = final_payment
                         u['payment_detail'] = '<font color="red">{0}€</font>\
-                                               <font color="blue">({1}f)</font> = {2}'.format(
+                                               <font color="blue">({1} ƒ)</font> = {2}'.format(
                             final_payment,
                             float2dec(final_payment / fair2eur_price),
                             payment_detail)
@@ -155,6 +157,7 @@ def calculate():
                     users_to_be_paid[username] = u
 
             user_total = defaultdict(int)
+
             for username, u in users_to_be_paid.items():
 
                 logging.debug('user: {0} total_eur_to_pay {1} final_payment {2}'.format(
@@ -166,6 +169,9 @@ def calculate():
                     percentage = 0
                 u['percentage'] = percentage
                 logging.debug('Percentage from total: {0}'.format(percentage))
+                if 'all_users' in globals():
+                    u['faircoinAddress'] = all_users[username]['faircoinAddress']
+                    u['id'] = all_users[username]['id']
                 user_total['fix-income'] += u['fix-income']
                 user_total['freelance_eur'] += u['freelance_eur']
                 user_total['final_payment'] += u['final_payment']
@@ -173,15 +179,15 @@ def calculate():
                 user_total['voluntary_time'] += u['voluntary_time']
                 user_total['tasks_time'] += u['tasks_time']
 
-    # Adding the total row
-    user_total['percentage'] = float2dec(100 * (user_total['final_payment'] / total_eur_to_pay))
-    user_total['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1}f)</font>\
-                                    = Fixed: {2}€, Tasks: {3}€'.format(
-        user_total['final_payment'],
-        float2dec(user_total['final_payment'] / fair2eur_price),
-        user_total['fix-income'],
-        user_total['freelance_eur'])
-    users_to_be_paid['TOTAL'] = user_total
+            # Adding the total row
+            user_total['percentage'] = float2dec(100 * (user_total['final_payment'] / total_eur_to_pay))
+            user_total['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1} ƒ)</font>\
+                                            = Fixed: {2}€, Tasks: {3}€'.format(
+                                           user_total['final_payment'],
+                                           float2dec(user_total['final_payment'] / fair2eur_price),
+                                           user_total['fix-income'],
+                                           user_total['freelance_eur'])
+            users_to_be_paid['TOTAL'] = user_total
 
     # Calculating money paid and left
     results['total_euros_left'] = total_budget - total_eur_to_pay
@@ -241,6 +247,8 @@ def index():
     settings['fixed_budget'] = get_fixed_budget(month=month_param)
     gitlab = GitlabConnector()
     ocp = OCPConnector()
+    global all_users
+    all_users = {}
 
     for area in areas:
         contributions_gitlab = []
@@ -253,7 +261,8 @@ def index():
         project_id = area['ocp'][0]
         if project_id:
             issues = ocp.get_data(project_id=project_id)
-            contributions_ocp = ocp.parse_issues(issues, project_id, date_min, date_max)
+            contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
+            all_users.update(ocp_users)
 
         contributions = contributions_gitlab + contributions_ocp
 
