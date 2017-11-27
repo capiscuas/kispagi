@@ -17,6 +17,8 @@ Kispagi (which means to pay with kisses in Esperanto) is an app that connects to
     pip install flask requests python-dateutil python-slugify
 
 ### Configuring settings
+Create an empty file at **env/__init__.py**
+
 Create a file **env/settings.py** which will contain the following content:
 
     ocp_token = "REPLACE_BY_THE_VALUENETWORK USER TOKEN"
