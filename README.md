@@ -1,4 +1,6 @@
-# Kispagi
+![Kispagi logo](https://git.fairkom.net/faircoop/Tech/Kispagi/uploads/03ce4a828d5830003a809c71e7fe1f3a/kispagi_morat.png)
+
+
 Kispagi (which means to pay with kisses in Esperanto) is an app that connects to your favourite(s) issue tracker or project manager(Gitlab, etc) to calculate the contributed hours and calculate a payment distribution with different rules.
 
 ## How to install it
