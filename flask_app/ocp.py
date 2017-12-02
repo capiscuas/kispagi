@@ -153,19 +153,12 @@ class OCPConnector(object):
                                     voluntary_work[username]['seconds_spent'] += seconds_spent
 
                 validators = set()
-                wrong_validators = set()
                 for commitment_id, commitment in commitments.items():
                     for username in commitment['pre_validators']:
                         if commitment_id == 'unplanned':  # Process validation
-                            if username not in contributors:
-                                validators.add(username)
-                            else:
-                                wrong_validators.add(username)
+                            validators.add(username)
                         else:  # Requirement validation
-                            if username not in commitments[commitment_id]["contributors"]:
-                                commitments[commitment_id]["validators"].add(username)
-                            else:
-                                commitments[commitment_id]["wrong_validators"].add(username)
+                            commitments[commitment_id]["validators"].add(username)
 
                 # Voluntary work
                 for username, c in voluntary_work.items():
@@ -186,20 +179,22 @@ class OCPConnector(object):
                     for commitment_id, c in user_commitments.items():
                         c_validation_msgs = []
                         c_validated = False
-                        c_validators = commitments[commitment_id]["validators"]
-                        c_wrong_validators = commitments[commitment_id]["wrong_validators"]
-                        if len(validators):
-                            c_validation_msgs.append('Process Validated by: {0}'.format(", ".join(validators)))
-                        if len(wrong_validators):
-                            c_validation_msgs.append('Invalid Process self-validations by: {0}'.format(
-                                                     ", ".join(wrong_validators)))
-                        if len(c_validators):
-                            c_validation_msgs.append('Commitment validated by: {0}'.format(
-                                                     ", ".join(c_validators)))
-                        if len(c_wrong_validators):
-                            c_validation_msgs.append('Invalid commitment self-validations by: {0}'.format(
-                                                     ", ".join(c_wrong_validators)))
-                        total_validations = len(c_validators) + len(validators)
+                        c_validators = []
+                        process_validators = validators.copy()
+                        if username in process_validators:
+                            process_validators.remove(username)
+                        if len(process_validators):
+                            c_validation_msgs.append('Process Validated by: {0}'.format(", ".join(process_validators)))
+
+                        if len(process_validators) < 2:
+                            c_validators = commitments[commitment_id]["validators"]
+                            if username in c_validators:
+                                c_validators.remove(username)
+                            if len(c_validators):
+                                c_validation_msgs.append('Commitment validated by: {0}'.format(
+                                                         ", ".join(c_validators)))
+
+                        total_validations = len(c_validators) + len(process_validators)
                         if total_validations >= 2:
                             c_validated = True
                         else:
