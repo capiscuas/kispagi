@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 app = flask.Flask(__name__)
 
 # TODO: to get from the getfaircoin API
-fair2eur_price = 0.9
+FAIR2EUR_PRICE = 0.9
 
 areas = [
     {'id': 'communication', 'name': 'Media/Communication', 'gitlab': [12], 'ocp': [437]},
@@ -36,7 +36,7 @@ areas = [
 
 # For faster testing only
 # areas = [
-#     {'id': 'testing', 'name': 'testing', 'gitlab': [None], 'ocp': [455]}
+#     {'id': 'commonmanagement', 'name': 'testing', 'gitlab': [15], 'ocp': [455]}
 # ]
 
 
@@ -44,7 +44,7 @@ areas = [
 def calculate():
     data = flask.request.get_json()
     settings, areas, users = _parse_calculate_data(data)
-    total_budget = settings['budget-euros'] + settings['budget-faircoins'] * fair2eur_price
+    total_budget = settings['budget-euros'] + settings['budget-faircoins'] * FAIR2EUR_PRICE
     logging.debug('Total budget in EUR {0}'.format(total_budget))
     results = {}
     total_fixed_incomes = 0
@@ -130,7 +130,7 @@ def calculate():
                         u['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1} ƒ)</font> \
                                                <font color="red">MAX!</font> < {2}'.format(
                             settings['max-month'],
-                            float2dec(settings['max-month'] / fair2eur_price),
+                            float2dec(settings['max-month'] / FAIR2EUR_PRICE),
                             payment_detail)
                         max_salary_users[username] = u
                         users.pop(username)
@@ -143,7 +143,7 @@ def calculate():
                         u['payment_detail'] = '<font color="red">{0}€</font>\
                                                <font color="blue">({1} ƒ)</font> = {2}'.format(
                             final_payment,
-                            float2dec(final_payment / fair2eur_price),
+                            float2dec(final_payment / FAIR2EUR_PRICE),
                             payment_detail)
 
             # All users final payment calculated
@@ -187,16 +187,16 @@ def calculate():
             user_total['payment_detail'] = '<font color="red">{0}€</font><font color="blue">({1} ƒ)</font>\
                                             = Fixed: {2}€, Tasks: {3}€'.format(
                                            user_total['final_payment'],
-                                           float2dec(user_total['final_payment'] / fair2eur_price),
+                                           float2dec(user_total['final_payment'] / FAIR2EUR_PRICE),
                                            user_total['fix-income'],
                                            user_total['freelance_eur'])
             users_to_be_paid['TOTAL'] = user_total
 
     # Calculating money paid and left
     results['total_euros_left'] = total_budget - total_eur_to_pay
-    f = settings['budget-faircoins'] * fair2eur_price - total_eur_to_pay
+    f = settings['budget-faircoins'] * FAIR2EUR_PRICE - total_eur_to_pay
     if f > 0:
-        results['faircoins_left'] = float2dec(f / fair2eur_price)
+        results['faircoins_left'] = float2dec(f / FAIR2EUR_PRICE)
         results['euros_left'] = settings['budget-euros']
     else:
         results['faircoins_left'] = 0
@@ -216,9 +216,9 @@ def calculate():
                  Total budget: {1}€ / {2}ƒ<br/>
                  Total to pay: {3}€ / {4}ƒ<br/>
                  Total Left: {5}€ / {6}""".format(float2dec(price_hour),
-                                                  float2dec(total_budget), float2dec(total_budget / fair2eur_price),
+                                                  float2dec(total_budget), float2dec(total_budget / FAIR2EUR_PRICE),
                                                   float2dec(total_eur_to_pay),
-                                                  float2dec(total_eur_to_pay / fair2eur_price),
+                                                  float2dec(total_eur_to_pay / FAIR2EUR_PRICE),
                                                   float2dec(results['total_euros_left']), money_left_msg)
         alerts.append({'type': 'success', 'msg': msg})
     results['alerts'] = alerts
@@ -244,7 +244,7 @@ def index():
         weekday, max_day = calendar.monthrange(year, month)
         date_min = datetime(year, month, 1, 0, 0)
         date_max = datetime(year, month, max_day, 0, 0)
-    settings = {'fair2eur_price': fair2eur_price,
+    settings = {'FAIR2EUR_PRICE': FAIR2EUR_PRICE,
                 'month_name': date_min.strftime("%B '%y")}
     settings['fixed_income_users'] = get_fixed_incomes(month=month_param)
     settings['fixed_budget'] = get_fixed_budget(month=month_param)
