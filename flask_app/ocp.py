@@ -187,7 +187,7 @@ class OCPConnector(object):
                             c_validation_msgs.append('Process Validated by: {0}'.format(", ".join(process_validators)))
 
                         if len(process_validators) < 2:
-                            c_validators = commitments[commitment_id]["validators"]
+                            c_validators = commitments[commitment_id]["validators"].copy()
                             if username in c_validators:
                                 c_validators.remove(username)
                             if len(c_validators):
