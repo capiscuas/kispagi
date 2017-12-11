@@ -109,7 +109,9 @@
               row_html += '<td style="width:200px;"><input style="width:60px;" type="number" name="fix-income-'+ area_id + '-' + username + '" value="0" min="0" />€' +
               ' x <input style="width:60px;" type="number" name="fix-hours-'+ area_id + '-' + username + '" value="0" min="0" />h</td>';
 
-              row_html += '<td><input style="width:60px;" type="number" name="volunteer-hours-'+ area_id + '-' + username + '" value="0" min="0" /></td>';
+            //   row_html += '<td><input style="width:60px;" type="number" name="volunteer-hours-'+ area_id + '-' + username + '" value="0" min="0" /></td>';
+              row_html += '<input  type="hidden" type="number" name="volunteer-hours-'+ area_id + '-' + username + '" value="0" min="0" />';
+
               //   Showing Finished Tasks
               var tasks_html = '';
               var validated_tasks_html = '';
@@ -179,9 +181,10 @@
     <div class="input-group pull-right" style="margin-right:20px;">
         <label class="control-label" style="margin-right:10px" >Work done for: </label>
             <select id="month-filter" name="month-filter" class=" form-control-static">
-              <option value="09-2017">Sept 2017</option>
-              <option value="10-2017">Oct 2017</option>
+              <!-- <option value="09-2017">Sept 2017</option>
+              <option value="10-2017">Oct 2017</option> -->
               <option value="11-2017" selected="selected">Nov 2017</option>
+              <option value="12-2017">Dec 2017</option>
             </select>
     </div>
 </div>
@@ -205,7 +208,7 @@
               <thead> <tr>
                   <th>User</th>
                   <th>Fixed income</th>
-                  <th>Free hours</th>
+                  <!-- <th>Free hours</th> -->
                   <th>Voluntary work<a href="#" data-toggle="tooltip" title="In Gitlab, work with label VOLUNTARY. In OCP, work needs to be unchecked the field 'is contribution'.">*</a></th>
                   <th>Work not yet validated<a href="#" data-toggle="tooltip" title="In Gitlab, work with label COMPLETED, with hours spent, assigned to someone and with due date. In OCP, work needs dated within this month and have hours with 'is contribution'.">*</a></th>
                   <th>Work validated<a href="#" data-toggle="tooltip" title="It needs at least 2 VALIDATED comments from somebody without contributed hours in the process/task.">*</a></th>
@@ -250,14 +253,18 @@ function populateResults(results) {
                 faircoinAddress = '';
                 link_profile = '';
 
-                if(userdata.hasOwnProperty('faircoinAddress')) {faircoinAddress = userdata['faircoinAddress']}
                 if(userdata.hasOwnProperty('id')) {
                     link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['id'];
-                    $html_users += '<td><a target="_blank" href="'+ link_profile + '">'+ username + '</a><br/>'+ faircoinAddress +'</td>';
+                    $html_users += '<td><a target="_blank" href="'+ link_profile + '">'+ username + '</a>';
                 }
                 else{
-                    $html_users += '<td>'+username+'</td>';
+                    $html_users += '<td>'+username;
                 }
+                if(userdata.hasOwnProperty('faircoinAddress')) {
+                    $html_users += '<br/>'+ userdata['faircoinAddress']
+                }
+                $html_users += '</td>';
+
 
                 $html_users += '<td data-order=' + userdata['final_payment'] + '>' + userdata['payment_detail'] + '</td>';
                 $html_users += '<td data-order=' + userdata['percentage'] + '>' + userdata['percentage'] + '% </td>';
