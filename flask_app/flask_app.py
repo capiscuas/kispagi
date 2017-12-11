@@ -18,7 +18,8 @@ logging.basicConfig(level=logging.DEBUG)
 app = flask.Flask(__name__)
 
 # TODO: to get from the getfaircoin API
-FAIR2EUR_PRICE = 0.9
+FAIR2EUR_PRICE = 1
+NO_WALLET_MSG = '(No wallet yet)'
 
 areas = [
     {'id': 'communication', 'name': 'Media/Communication', 'gitlab': [12], 'ocp': [437]},
@@ -34,10 +35,11 @@ areas = [
     {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]}
 ]
 
-# For faster testing only
-# areas = [
-#     {'id': 'commonmanagement', 'name': 'testing', 'gitlab': [15], 'ocp': [455]}
-# ]
+try:
+    from env.settings import areas_test
+    areas = areas_test
+except Exception:
+    pass
 
 
 @app.route('/calculate/', methods=['POST'])
@@ -172,9 +174,17 @@ def calculate():
                     percentage = 0
                 u['percentage'] = percentage
                 logging.debug('Percentage from total: {0}'.format(percentage))
+
                 if 'all_users' in globals():
-                    u['faircoinAddress'] = all_users[username]['faircoinAddress']
-                    u['id'] = all_users[username]['id']
+                    try:
+                        u['faircoinAddress'] = all_users[username]['faircoinAddress']
+                        if all_users[username]['faircoinAddress'] is None:
+                            u['faircoinAddress'] = NO_WALLET_MSG
+                        u['id'] = all_users[username]['id']
+                        # TODO to show Gitlab link also
+                    except KeyError:
+                        u['faircoinAddress'] = NO_WALLET_MSG
+
                 user_total['fix-income'] += u['fix-income']
                 user_total['freelance_eur'] += u['freelance_eur']
                 user_total['final_payment'] += u['final_payment']
