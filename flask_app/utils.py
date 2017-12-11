@@ -100,7 +100,7 @@ def _parse_calculate_data(data):
     return settings, areas, users
 
 
-users_db = [{'ocp_username': 'Maro', 'gitlab': 'Marohf'},
+users_db = [{'ocp_username': 'maro', 'gitlab': 'Marohf'},
             {'ocp_username': 'ivan_garcia', 'gitlab': 'kapis'},
             {'ocp_username': 'pilikum_l_kerill', 'gitlab': 'pilikum'},
             {'ocp_username': 'teresa_sempere', 'gitlab': 'tereseta'},
@@ -109,7 +109,8 @@ users_db = [{'ocp_username': 'Maro', 'gitlab': 'Marohf'},
             {'ocp_username': 'chris_zumbrunn', 'gitlab': 'zumbrunn'},
             {'ocp_username': 'alex_berbel', 'gitlab': 'al-demon1'},
             {'ocp_username': 'vieillescaze_serge', 'gitlab': 'serge.vi'},
-            {'ocp_username': 'onix228', 'gitlab': 'onix228'}]
+            {'ocp_username': 'onix228', 'gitlab': 'onix228'},
+            {'ocp_username': 'Sebastian', 'gitlab': 'sebastian.kuehs'}]
 
 validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
 
@@ -157,7 +158,7 @@ fixed_month_values = {
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'}]},
 
-    '11-2017': {'budget-faircoins': 11111.12,
+    '11-2017': {'budget-faircoins': 10000,
                 'users': [
                     {'username': 'maro', 'fix_hours': 80, 'fix_income': 600, 'area': 'commonmanagement'},
                     {'username': 'javier_mckleyn', 'fix_hours': 100, 'fix_income': 600, 'area': 'commonmanagement'},
@@ -167,7 +168,6 @@ fixed_month_values = {
                     {'username': 'onix228', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
-                    {'username': 'juanse_h', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300, 'area': 'communication'}]}
 }
 
