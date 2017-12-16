@@ -19,7 +19,7 @@ app = flask.Flask(__name__)
 
 # TODO: to get from the getfaircoin API
 FAIR2EUR_PRICE = 1
-NO_WALLET_MSG = '(No wallet yet)'
+
 
 areas = [
     {'id': 'communication', 'name': 'Media/Communication', 'gitlab': [12], 'ocp': [437]},
@@ -44,6 +44,9 @@ except Exception:
 
 @app.route('/calculate/', methods=['POST'])
 def calculate():
+
+    special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
+                       'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH'}
     data = flask.request.get_json()
     settings, areas, users = _parse_calculate_data(data)
     total_budget = settings['budget-euros'] + settings['budget-faircoins'] * FAIR2EUR_PRICE
@@ -164,7 +167,7 @@ def calculate():
             user_total = defaultdict(int)
 
             for username, u in users_to_be_paid.items():
-
+                print('user', username)
                 logging.debug('user: {0} total_eur_to_pay {1} final_payment {2}'.format(
                     username, total_eur_to_pay, u['final_payment']))
                 try:
@@ -176,14 +179,9 @@ def calculate():
                 logging.debug('Percentage from total: {0}'.format(percentage))
 
                 if 'all_users' in globals():
-                    try:
-                        u['faircoinAddress'] = all_users[username]['faircoinAddress']
-                        if all_users[username]['faircoinAddress'] is None:
-                            u['faircoinAddress'] = NO_WALLET_MSG
-                        u['id'] = all_users[username]['id']
-                        # TODO to show Gitlab link also
-                    except KeyError:
-                        u['faircoinAddress'] = NO_WALLET_MSG
+                    u.update(all_users[username])
+                    if username in special_wallets:
+                        u['ocp_faircoin_address'] = special_wallets[username]
 
                 user_total['fix-income'] += u['fix-income']
                 user_total['freelance_eur'] += u['freelance_eur']
@@ -240,6 +238,7 @@ def calculate():
 @app.route('/')
 def index():
     month_param = flask.request.args.get('month', default='11-2017', type=str)
+
     logging.debug('Month requested: {0}'.format(month_param))
     try:
         splitted_month = month_param.split('-')
@@ -261,21 +260,31 @@ def index():
     gitlab = GitlabConnector()
     ocp = OCPConnector()
     global all_users
-    all_users = {}
 
+    all_users = {}
+    gitlab.get_server_users()
     for area in areas:
         contributions_gitlab = []
         contributions_ocp = []
         project_id = area['gitlab'][0]
         if project_id:
             issues = gitlab.get_issues(project_id=project_id)
-            contributions_gitlab = gitlab.parse_issues(issues, project_id, date_min, date_max)
+            contributions_gitlab, gitlab_users = gitlab.parse_issues(issues, project_id, date_min, date_max)
+            for username, user in gitlab_users.items():
+                if username in all_users:
+                    all_users[username].update(user)
+                else:
+                    all_users[username] = user
 
         project_id = area['ocp'][0]
         if project_id:
             issues = ocp.get_data(project_id=project_id)
             contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
-            all_users.update(ocp_users)
+            for username, user in ocp_users.items():
+                if username in all_users:
+                    all_users[username].update(user)
+                else:
+                    all_users[username] = user
 
         contributions = contributions_gitlab + contributions_ocp
 
@@ -307,6 +316,7 @@ def index():
 
         area['tasks'] = contributions
         area['users'] = users_list
+    print(all_users)
 
     return flask.render_template('index.html', settings=settings, areas=areas)
 
