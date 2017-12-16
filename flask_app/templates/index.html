@@ -275,7 +275,8 @@ function populateResults(results) {
                     $html_users += $gitlab_user_html + $address_html
                 }else if(userdata.hasOwnProperty('ocp_faircoin_address')) {
                     $address_html = '<br/><font color="'+$ocp_color+'">'+ userdata['ocp_faircoin_address']+'</font>'
-                    $html_users += $ocp_user_html + $address_html
+                    if($ocp_user_html)   $html_users += $ocp_user_html + $address_html
+                    else if($gitlab_user_html) $html_users += $gitlab_user_html + $address_html
                 }else{
                     if($gitlab_user_html) $html_users += $gitlab_user_html + '<br/>(No wallet yet)'
                     else if($ocp_user_html) $html_users += $ocp_user_html + '<br/>(No wallet yet)'
