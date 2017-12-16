@@ -104,7 +104,8 @@ class OCPConnector(object):
                         user_id = i['provider']['id']
                         user_faircoinaddress = i['provider']['faircoinAddress']
                         if username not in ocp_users:
-                            ocp_users[username] = {"id": user_id, "faircoinAddress": user_faircoinaddress}
+                            ocp_users[username] = {"ocp_username": username, "ocp_id": user_id,
+                                                   "ocp_faircoin_address": user_faircoinaddress}
                         # username = get_unique_username(key='ocp_id', value=user_id)
                         # if not username:
                         if _is_validated_comment(i['note']):
