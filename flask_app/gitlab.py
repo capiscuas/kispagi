@@ -20,6 +20,25 @@ except Exception:
 
 
 class GitlabConnector(object):
+    server_users = {}
+
+    def get_server_users(self):
+        all_users = []
+        more_users = True
+        page = 0
+        while more_users:
+            page += 1
+            url = '{0}/v4/users/?page={1}&per_page=100'.format(gitlab_host, page)
+            logging.debug(url)
+            response = requests.get(url, headers={'PRIVATE-TOKEN': gitlab_token})
+            more_users = response.json()
+            all_users += more_users
+
+        for user in all_users:
+            username = user['username']
+            self.server_users[username] = {'email': user['email'], 'gitlab_id': user['id'],
+                                           'location': user['location'],
+                                           'gitlab_name': user['name']}
 
     def filter_time_from_issue_notes(self, notes):
         pass
@@ -57,6 +76,7 @@ class GitlabConnector(object):
         # adding Gitlab tasks
         # project_labels = []
         contributions = []
+        gitlab_users = {}
         for i in issues:
             # print("Issue", i['iid'])
             validators = set()
@@ -68,7 +88,18 @@ class GitlabConnector(object):
                 # print(i['title'], i['labels'])
                 if len(i['assignees']) and i['time_stats']['total_time_spent'] > 0:
                     username = i['assignees'][0]['username']
-                    username = get_unique_username(key='gitlab', value=username)
+
+                    email = self.server_users[username]['email']
+                    # ocp_api_users_by_email[email]
+                    ocp_username = get_unique_username(key='gitlab', value=username)
+                    # username = get_user_profile(self, gitlab_username=username)
+                    user_profile = {"gitlab_username": username, 'email': email}
+                    if self.server_users[username]['location'] and self.server_users[username]['location'].startswith('f'):
+                        user_profile["gitlab_faircoin_address"] = self.server_users[username]['location']
+                    if ocp_username:
+                        user_profile["ocp_username"] = ocp_username
+                        username = ocp_username
+
                     seconds_spent = i['time_stats']['total_time_spent']
                     comments = self.get_comments(project_id=project_id, issue_iid=i['iid'])
                     validation_msgs = []
@@ -104,6 +135,7 @@ class GitlabConnector(object):
                         validated = False
                         validation_msgs.append('Due date not specified')
 
+                    gitlab_users[username] = user_profile
                     contributions.append({'id': i['iid'],
                                           'type': 'GITLAB',
                                           'date': due_date_str,
@@ -114,4 +146,5 @@ class GitlabConnector(object):
                                           'task_title': "{0}".format(i['title']),
                                           'total_time_spent': seconds_spent,
                                           'username': username})
-        return contributions
+
+        return contributions, gitlab_users
