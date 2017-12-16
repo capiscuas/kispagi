@@ -134,7 +134,7 @@ def get_unique_username(key=None, value=None):
         for u in users_db:
             if value == u[key]:
                 return u['gitlab']
-    return value
+    return None
 
 
 fixed_month_values = {
@@ -166,6 +166,17 @@ fixed_month_values = {
                     {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'onix228', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300, 'area': 'communication'}]},
+
+    '12-2017': {'budget-faircoins': 10000,
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 100, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 80, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300, 'area': 'communication'}]}
