@@ -18,6 +18,8 @@
   </style>
 
       <script type="text/javascript">
+          var $gitlab_color = "blue";
+          var $ocp_color = "red";
           function getParameterByName(name) {
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
           }
@@ -68,12 +70,12 @@
                   $color = "red";
                   tooltip_html = ''
                   if(task.type == 'GITLAB') {
-                      $color = "blue";
+                      $color = $gitlab_color;
                       if(task.date) {
                           tooltip_html = '<b>Date: </b>' + task.date + '<hr>'
                       }
                   }
-                  if(task.type == 'OCP') $color = "red";
+                  if(task.type == 'OCP') $color = $ocp_color;
                   //if(task.note.indexOf("OCP") >= 0)  $color = "green";
 
 
@@ -250,21 +252,35 @@ function populateResults(results) {
             $html_users = '';
             $.each( results['users'], function( username, userdata ) {
                 $html_users += '<tr>';
-                faircoinAddress = '';
-                link_profile = '';
+                $faircoinAddress = '';
+                $link_profile = '';
 
-                if(userdata.hasOwnProperty('id')) {
-                    link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['id'];
-                    $html_users += '<td><a target="_blank" href="'+ link_profile + '">'+ username + '</a>';
+                $gitlab_user_html = '';
+                $ocp_user_html = '';
+                if(userdata.hasOwnProperty('gitlab_name')) {
+                        $name =  userdata['gitlab_name']
+                } else $name = username
+                if(userdata.hasOwnProperty('gitlab_username')) {
+                        link_profile = "https://git.fairkom.net/" + userdata['gitlab_username'];
+                        $gitlab_user_html = '<td><a target="_blank" href="'+ link_profile + '">'+ $name + '</a>';
                 }
-                else{
-                    $html_users += '<td>'+username;
+                if(userdata.hasOwnProperty('ocp_id')) {
+                    link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['ocp_id'];
+                    $ocp_user_html = '<td><a target="_blank" href="'+ link_profile + '">'+ $name + '</a>';
                 }
-                if(userdata.hasOwnProperty('faircoinAddress')) {
-                    $html_users += '<br/>'+ userdata['faircoinAddress']
+                if (!$ocp_user_html && !$gitlab_user_html)  $html_users += '<td>'+$name;
+
+                if(userdata.hasOwnProperty('gitlab_faircoin_address')) {
+                    $address_html = '<br/><font color="'+$gitlab_color+'">'+ userdata['gitlab_faircoin_address']+'</font>'
+                    $html_users += $gitlab_user_html + $address_html
+                }else if(userdata.hasOwnProperty('ocp_faircoin_address')) {
+                    $address_html = '<br/><font color="'+$ocp_color+'">'+ userdata['ocp_faircoin_address']+'</font>'
+                    $html_users += $ocp_user_html + $address_html
+                }else{
+                    if($gitlab_user_html) $html_users += $gitlab_user_html + '<br/>(No wallet yet)'
+                    else if($ocp_user_html) $html_users += $ocp_user_html + '<br/>(No wallet yet)'
                 }
                 $html_users += '</td>';
-
 
                 $html_users += '<td data-order=' + userdata['final_payment'] + '>' + userdata['payment_detail'] + '</td>';
                 $html_users += '<td data-order=' + userdata['percentage'] + '>' + userdata['percentage'] + '% </td>';
