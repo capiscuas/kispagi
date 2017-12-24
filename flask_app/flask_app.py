@@ -32,7 +32,8 @@ areas = [
     {'id': 'techteam', 'name': 'Tech Team(from OCP)', 'gitlab': [None], 'ocp': [18]},
     {'id': 'faircoopwebsite', 'name': 'Fair.Coop Website', 'gitlab': [None], 'ocp': [549]},
     {'id': 'kispagi', 'name': 'Kispagi tool for OCW', 'gitlab': [35], 'ocp': [None]},
-    {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]}
+    {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]},
+    {'id': 'usefaircoin', 'name': 'UseFaircoin Website', 'gitlab': [13], 'ocp': [None]}
 ]
 
 try:
@@ -167,7 +168,7 @@ def calculate():
             user_total = defaultdict(int)
 
             for username, u in users_to_be_paid.items():
-                print('user', username)
+                # print('user', username)
                 logging.debug('user: {0} total_eur_to_pay {1} final_payment {2}'.format(
                     username, total_eur_to_pay, u['final_payment']))
                 try:
@@ -237,7 +238,7 @@ def calculate():
 
 @app.route('/')
 def index():
-    month_param = flask.request.args.get('month', default='11-2017', type=str)
+    month_param = flask.request.args.get('month', default='12-2017', type=str)
 
     logging.debug('Month requested: {0}'.format(month_param))
     try:
@@ -249,7 +250,7 @@ def index():
         date_max = datetime(year, month, max_day, 0, 0)
     except Exception:
         year = 2017
-        month = 11
+        month = 12
         weekday, max_day = calendar.monthrange(year, month)
         date_min = datetime(year, month, 1, 0, 0)
         date_max = datetime(year, month, max_day, 0, 0)
@@ -263,6 +264,8 @@ def index():
 
     all_users = {}
     gitlab.get_server_users()
+    # ocp.get_server_users()
+
     for area in areas:
         contributions_gitlab = []
         contributions_ocp = []
@@ -316,7 +319,7 @@ def index():
 
         area['tasks'] = contributions
         area['users'] = users_list
-    print(all_users)
+    # print(all_users)
 
     return flask.render_template('index.html', settings=settings, areas=areas)
 
