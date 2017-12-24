@@ -23,12 +23,32 @@ except Exception:
 
 
 class OCPConnector(object):
+    server_email2agent = {}
+    server_agent2email = {}
+    server_email2username = {}
 
-    def get_emails(self, agent_ids):
+    def get_ocp_faircoin_address(self, agent_id):
         pass
-        # get from https://ocp.freedomcoop.eu/work/agent/agent_id/
-        # from https://ocp.freedomcoop.eu/api/agentuser/ ->
-        # then request https://ocp.freedomcoop.eu/api/users/X/ to get email
+        # https://ocp.freedomcoop.eu/work/agent/56/
+    def get_server_users(self):
+        users2emails = {}
+        with open('env/ocp.users.json') as data_file:
+            data = json.load(data_file)
+
+        for user in data:
+            email = user['email']
+            users2emails[user['api_url']] = email
+            self.server_email2username[email] = user['username']
+
+        with open('env/ocp.agents.json') as data_file:
+            data = json.load(data_file)
+
+        for agent in data:
+            if agent['user'] in users2emails:
+                email = users2emails[agent['user']]
+                agent_id = int(agent['agent'].split("/")[-2])
+                self.server_email2agent[email] = agent_id
+                self.server_agent2email[agent_id] = email
 
     def get_data(self, project_id):
         issues_url = '{0}/v4/projects/{1}/issues'.format(ocp_host, project_id)
