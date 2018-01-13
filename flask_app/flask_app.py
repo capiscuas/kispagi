@@ -113,8 +113,8 @@ def calculate():
             while repeat:
                 price_hour = float2dec(left_budget / float(total_payable_hours))
                 if price_hour > settings['max-hour']:
-                    alert = 'Price/hour was reduced to the general max-hour={1}€ \
-                             because the calculated is superior: {0}€ > {1}€'.format(
+                    alert = 'Price/hour was reduced to the general MAX_HOUR={1}€ \
+                             because the calculated hour value is bigger: {0}€ > {1}€'.format(
                         float2dec(price_hour), settings['max-hour'])
                     max_hour_alert = {'type': 'warning', 'msg': alert}
                     price_hour = settings['max-hour']
