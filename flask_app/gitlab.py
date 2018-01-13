@@ -65,12 +65,18 @@ class GitlabConnector(object):
         return comments
 
     def get_issues(self, project_id=None):
-        if project_id:
-            url = '{0}/v4/projects/{1}/issues?state=opened&per_page=100'.format(gitlab_host, project_id)
-            logging.debug(url)
-            response = requests.get(url, headers={'PRIVATE-TOKEN': gitlab_token})
-            return response.json()
-        return None
+        all_issues = []
+        more = True
+        page = 0
+        while more:
+            page += 1
+            if project_id:
+                url = '{0}/v4/projects/{1}/issues?state=opened&page={2}&per_page=100'.format(gitlab_host, project_id, page)
+                logging.debug(url)
+                response = requests.get(url, headers={'PRIVATE-TOKEN': gitlab_token})
+                more = response.json()
+                all_issues += more
+        return all_issues
 
     def parse_issues(self, issues, project_id, date_min, date_max):
         # adding Gitlab tasks
