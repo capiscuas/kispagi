@@ -49,13 +49,13 @@
           function setUserDefaults(){
               var fixed_income_users = {{settings.fixed_income_users|tojson}};
               $.each(fixed_income_users, function(i, p) {
-                  income_name = 'fix-income-'+p.area + '|' + p.username
+                  income_name = 'fix-income-'+p.area + '--' + p.username
                 //   if($( "input[name="+income_name+"]" ).length == 0){
                 //       console.log('Does not exist' + income_name)
                 //       addUserRow(p.area, p.username, null);
                 //   }
-                  hours_name = 'fix-hours-'+p.area + '|' + p.username
-                  volunteer_name = 'volunteer-hours-'+p.area + '|' + p.username
+                  hours_name = 'fix-hours-'+p.area + '--' + p.username
+                  volunteer_name = 'volunteer-hours-'+p.area + '--' + p.username
                   $( "input[name="+income_name+"]" ).val(p.fix_income);
                   $( "input[name="+hours_name+"]" ).val(p.fix_hours);
                   if(p.volunteer_hours) {$( "input[name="+volunteer_name+"]" ).val(p.volunteer_hours);}
@@ -108,11 +108,11 @@
               var row_html = '';
               row_html += '<tr>';
               row_html += '<td>' + username + '</td>';
-              row_html += '<td style="width:200px;"><input style="width:60px;" type="number" name="fix-income-'+ area_id + '|' + username + '" value="0" min="0" />€' +
-              ' x <input style="width:60px;" type="number" name="fix-hours-'+ area_id + '|' + username + '" value="0" min="0" />h</td>';
+              row_html += '<td style="width:200px;"><input style="width:60px;" type="number" name="fix-income-'+ area_id + '--' + username + '" value="0" min="0" />€' +
+              ' x <input style="width:60px;" type="number" name="fix-hours-'+ area_id + '--' + username + '" value="0" min="0" />h</td>';
 
             //   row_html += '<td><input style="width:60px;" type="number" name="volunteer-hours-'+ area_id + '|' + username + '" value="0" min="0" /></td>';
-              row_html += '<input  type="hidden" type="number" name="volunteer-hours-'+ area_id + '|' + username + '" value="0" min="0" />';
+              row_html += '<input  type="hidden" type="number" name="volunteer-hours-'+ area_id + '--' + username + '" value="0" min="0" />';
 
               //   Showing Finished Tasks
               var tasks_html = '';
@@ -134,8 +134,8 @@
               row_html += '<td> ' + to_validate_tasks_html + '</td>';
               row_html += '<td>' + validated_tasks_html + '</td>';
               row_html += '<td>' + total_time_spent_str + '</td>';
-              row_html += '<input type="hidden" name="time-'+ area_id + '|' + username + '" value="'+total_time_spent+'" />'
-              row_html += '<input type="hidden" name="voluntary-time-'+ area_id + '|' + username + '" value="'+total_time_voluntary+'" />'
+              row_html += '<input type="hidden" name="time-'+ area_id + '--' + username + '" value="'+total_time_spent+'" />'
+              row_html += '<input type="hidden" name="voluntary-time-'+ area_id + '--' + username + '" value="'+total_time_voluntary+'" />'
               row_html += '</tr>';
               return row_html;
           }

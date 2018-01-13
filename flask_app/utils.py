@@ -72,27 +72,27 @@ def _parse_calculate_data(data):
         v = d['value']
 
         if k.startswith('volunteer-hours-'):
-            area_user = k[len('volunteer-hours-'):].split('|')
+            area_user = k[len('volunteer-hours-'):].split('--')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'volunteer-hours', float2dec(float(v)))
         elif k.startswith('fix-hours-'):
-            area_user = k[len('fix-hours-'):].split('|')
+            area_user = k[len('fix-hours-'):].split('--')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'fix-hours', float2dec(float(v)))
         elif k.startswith('fix-income-'):
-            area_user = k[len('fix-income-'):].split('|')
+            area_user = k[len('fix-income-'):].split('--')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'fix-income', float2dec(float(v)))
         elif k.startswith('time-'):
-            area_user = k[len('time-'):].split('|')
+            area_user = k[len('time-'):].split('--')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'time', int(float(v)))
         elif k.startswith('voluntary-time-'):
-            area_user = k[len('voluntary-time-'):].split('|')
+            area_user = k[len('voluntary-time-'):].split('--')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'voluntary-time', int(float(v)))
@@ -101,7 +101,7 @@ def _parse_calculate_data(data):
 
 
 users_db = [{'ocp_username': 'maro', 'gitlab': 'Marohf'},
-            {'ocp_username': 'ivan_garcia', 'gitlab': 'kapis'},
+            {'ocp_username': 'IvanEsperanto', 'gitlab': 'kapis'},
             {'ocp_username': 'pilikum_l_kerill', 'gitlab': 'pilikum'},
             {'ocp_username': 'teresa_sempere', 'gitlab': 'tereseta'},
             {'ocp_username': 'guy_james', 'gitlab': 'guyjames'},
