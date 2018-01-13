@@ -30,10 +30,11 @@ areas = [
     {'id': 'fairmarket', 'name': 'FairMarket', 'gitlab': [16], 'ocp': [512]},
     {'id': 'ocpdev', 'name': 'OCP Development', 'gitlab': [None], 'ocp': [547]},
     {'id': 'techteam', 'name': 'Tech Team(from OCP)', 'gitlab': [None], 'ocp': [18]},
-    {'id': 'faircoopwebsite', 'name': 'Fair.Coop Website', 'gitlab': [None], 'ocp': [549]},
+    {'id': 'faircoopwebsite', 'name': 'Website/Forum/Wiki/Blog', 'gitlab': [21], 'ocp': [549]},
     {'id': 'kispagi', 'name': 'Kispagi tool for OCW', 'gitlab': [35], 'ocp': [None]},
     {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]},
-    {'id': 'usefaircoin', 'name': 'UseFaircoin Website', 'gitlab': [13], 'ocp': [None]}
+    {'id': 'usefaircoin', 'name': 'UseFaircoin Website', 'gitlab': [13], 'ocp': [None]},
+    {'id': 'extension', 'name': 'FC Extension', 'gitlab': [None], 'ocp': [713]}
 ]
 
 try:
@@ -282,6 +283,7 @@ def index():
         project_id = area['ocp'][0]
         if project_id:
             issues = ocp.get_data(project_id=project_id)
+            logging.debug('CP project_id: {0}'.format(project_id))
             contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
             for username, user in ocp_users.items():
                 if username in all_users:
