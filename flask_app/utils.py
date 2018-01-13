@@ -72,27 +72,27 @@ def _parse_calculate_data(data):
         v = d['value']
 
         if k.startswith('volunteer-hours-'):
-            area_user = k[len('volunteer-hours-'):].split('-')
+            area_user = k[len('volunteer-hours-'):].split('|')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'volunteer-hours', float2dec(float(v)))
         elif k.startswith('fix-hours-'):
-            area_user = k[len('fix-hours-'):].split('-')
+            area_user = k[len('fix-hours-'):].split('|')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'fix-hours', float2dec(float(v)))
         elif k.startswith('fix-income-'):
-            area_user = k[len('fix-income-'):].split('-')
+            area_user = k[len('fix-income-'):].split('|')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'fix-income', float2dec(float(v)))
         elif k.startswith('time-'):
-            area_user = k[len('time-'):].split('-')
+            area_user = k[len('time-'):].split('|')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'time', int(float(v)))
         elif k.startswith('voluntary-time-'):
-            area_user = k[len('voluntary-time-'):].split('-')
+            area_user = k[len('voluntary-time-'):].split('|')
             area = area_user[0]
             username = area_user[1]
             _add_user_value(areas, area, username, 'voluntary-time', int(float(v)))
@@ -170,7 +170,7 @@ fixed_month_values = {
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 50, 'fix_income': 300, 'area': 'communication'}]},
 
-     #6,25eur per hour for fixed income
+     #6,25eur per hour for fixed income, with extensions 6eur exceptionality
     '12-2017': {'budget-faircoins': 10000,
                 'users': [
                     {'username': 'maro', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
@@ -178,7 +178,21 @@ fixed_month_values = {
                     {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
                     {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
-                    {'username': 'alex_berbel', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
+                    {'username': 'al-demon', 'fix_hours': 120, 'fix_income': 750, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'},
+                    {'username': 'averiada', 'fix_hours': 43, 'fix_income': 258, 'area': 'extension'},
+                    {'username': 'edgar_nomada', 'fix_hours': 43, 'fix_income': 258, 'area': 'extension'},
+                    {'username': 'nikola_buric', 'fix_hours': 5, 'fix_income': 30, 'area': 'extension'}]},
+
+    '01-2018': {'budget-faircoins': 10000,
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 500, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'al-demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]}
 }
