@@ -171,13 +171,16 @@
   </div>
 </nav>
 
-<br />
+<br/>
 <hr>
   {% import 'months.html' as months %} {{months}}
 </div>
+<div id="top-alerts"> </div>
+{% for alert in alerts %}
+    <div class="alert alert-{{alert.type}}"><strong>{{alert.msg}}</strong></div>
+{% endfor %}
 
 <form id="areasForm" name="areasForm">
-
 <script>
     $month = getParameterByName('month');
     if($month) $('#month-filter').val($month);
@@ -232,6 +235,7 @@ $(document).ready(function() {
 });
 
 function populateResults(results) {
+
        if(results.hasOwnProperty('users')){
             $html_users = '';
             $.each( results['users'], function( username, userdata ) {
