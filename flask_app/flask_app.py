@@ -268,8 +268,8 @@ def index():
         weekday, max_day = calendar.monthrange(year, month)
         date_max = datetime(year, month, max_day, 0, 0)
     except Exception:
-        year = 2017
-        month = 12
+        year = 2018
+        month = 1
         weekday, max_day = calendar.monthrange(year, month)
         date_min = datetime(year, month, 1, 0, 0)
         date_max = datetime(year, month, max_day, 0, 0)
