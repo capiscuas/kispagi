@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division
+import os.path
+import os
 import traceback
 import flask
 import calendar
@@ -40,6 +42,12 @@ areas = [
 try:
     from env.settings import areas_test
     areas = areas_test
+except Exception:
+    pass
+
+try:
+    from env.settings import home_directory
+    os.chdir(home_directory)
 except Exception:
     pass
 
