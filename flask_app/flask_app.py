@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 app = flask.Flask(__name__)
 
 # TODO: to get from the getfaircoin API
-FAIR2EUR_PRICE = 1
+FAIR2EUR_PRICE = 1.2
 
 
 areas = [
