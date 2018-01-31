@@ -262,8 +262,8 @@ function populateResults(results) {
                     if($ocp_user_html)   $html_users += $ocp_user_html + $address_html
                     else if($gitlab_user_html) $html_users += $gitlab_user_html + $address_html
                 }else{
-                    if($gitlab_user_html) $html_users += $gitlab_user_html + '<br/>(No wallet yet)'
-                    else if($ocp_user_html) $html_users += $ocp_user_html + '<br/>(No wallet yet)'
+                    if($gitlab_user_html) $html_users += $gitlab_user_html + '<br/>(No wallet address)'
+                    else if($ocp_user_html) $html_users += $ocp_user_html + '<br/>(No wallet address)'
                 }
                 $html_users += '</td>';
 
