@@ -239,8 +239,12 @@ def calculate():
 
 @app.route('/')
 def index():
-    month_param = flask.request.args.get('month', default='12-2017', type=str)
-
+    alerts = []
+    month_param = flask.request.args.get('month', default='01-2018', type=str)
+    fname = '{0}.html'.format(month_param)
+    if os.path.isfile(os.path.join('templates', fname)):
+        logging.debug('Found Results template {0}'.format(fname))
+        return flask.render_template(fname)
     logging.debug('Month requested: {0}'.format(month_param))
     try:
         splitted_month = month_param.split('-')
