@@ -353,6 +353,10 @@ def index():
     # print(all_users)
 
     return flask.render_template('index.html', settings=settings, areas=areas)
+    if ocp_error_connection:
+        alerts.append({'type': 'danger', 'msg': 'OCP connection failed when accessing some projects. Contact OCP admins.'})
+
+    return flask.render_template('index.html', settings=settings, areas=areas, alerts=alerts)
 
 
 if __name__ == '__main__':
