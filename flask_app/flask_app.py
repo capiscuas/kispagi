@@ -298,16 +298,27 @@ def index():
                 else:
                     all_users[username] = user
 
-        project_id = area['ocp'][0]
-        if project_id:
-            issues = ocp.get_data(project_id=project_id)
-            logging.debug('CP project_id: {0}'.format(project_id))
-            contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
-            for username, user in ocp_users.items():
-                if username in all_users:
-                    all_users[username].update(user)
-                else:
-                    all_users[username] = user
+        for project_id in area['ocp']:
+            if project_id:
+                ocp_users = {}
+                logging.debug('OCP project_id: {0}'.format(project_id))
+
+                if not ocp_error_connection:
+                    issues = ocp.get_data(project_id=project_id)
+                    if issues is None:
+                        ocp_error_connection = True
+                    else:
+                        try:
+                            contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
+                        except Exception:
+                            ocp_error_connection = True
+
+                for username, user in ocp_users.items():
+                    if username in all_users:
+                        all_users[username].update(user)
+                    else:
+                        all_users[username] = user
+                contributions_ocp += contributions_ocp
 
         contributions = contributions_gitlab + contributions_ocp
 
