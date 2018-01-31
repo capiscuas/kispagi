@@ -60,6 +60,7 @@ def calculate():
                        'sofocles_dans': 'fGFmLSn8WkcXvwxkVa9wKGkJ51NV9wCjo8',
                        'cegroj': 'fYGHKViDbvsuHqUPSGDyU2vJtGYQmwVHyn'}
     data = flask.request.get_json()
+    alerts = []
     settings, areas, users = _parse_calculate_data(data)
     total_budget = settings['budget-euros'] + settings['budget-faircoins'] * FAIR2EUR_PRICE
     logging.debug('Total budget in EUR {0}'.format(total_budget))
@@ -70,7 +71,7 @@ def calculate():
     users_to_be_paid = {}
     calculation_successful = True
     price_hour = 10
-    alerts = []
+
 
     for area_name, area in areas.items():
         alerts = []
@@ -282,12 +283,15 @@ def index():
     global all_users
 
     all_users = {}
+    ocp_error_connection = False
     gitlab.get_server_users()
-    # ocp.get_server_users()
+    ocp.get_server_users()
 
     for area in areas:
         contributions_gitlab = []
         contributions_ocp = []
+        logging.debug('Checking area: {0}'.format(area['name']))
+
         project_id = area['gitlab'][0]
         if project_id:
             issues = gitlab.get_issues(project_id=project_id)
@@ -350,9 +354,7 @@ def index():
 
         area['tasks'] = contributions
         area['users'] = users_list
-    # print(all_users)
 
-    return flask.render_template('index.html', settings=settings, areas=areas)
     if ocp_error_connection:
         alerts.append({'type': 'danger', 'msg': 'OCP connection failed when accessing some projects. Contact OCP admins.'})
 
