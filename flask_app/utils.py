@@ -185,7 +185,7 @@ fixed_month_values = {
                     {'username': 'edgar_nomada', 'fix_hours': 43, 'fix_income': 258, 'area': 'extension'},
                     {'username': 'nikola_buric', 'fix_hours': 5, 'fix_income': 30, 'area': 'extension'}]},
 
-    '01-2018': {'budget-faircoins': 10000,
+    '01-2018': {'budget-faircoins': 8333.33,
                 'users': [
                     {'username': 'maro', 'fix_hours': 80, 'fix_income': 500, 'area': 'commonmanagement'},
                     {'username': 'javier_mckleyn', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
