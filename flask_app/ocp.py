@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import os
 from collections import defaultdict
 import requests
-from dateutil.parser import parse
+
+
+from dateutil.parser import parse as parse_date
+from datetime import timedelta
 from slugify import slugify
 import json
 import logging
@@ -21,6 +26,17 @@ try:
 except Exception:
     logging.error("ocp_host not defined in env/settings.py, you should created it")
 
+CHECK_PROCESS_DATES = False
+
+
+def _add_ocp_duration_to_date(date, duration):
+    if 'day' not in duration:
+        days = 0
+    else:
+        days = int(duration[:duration.find('day') - 1])
+
+    return date + timedelta(days=days)
+
 
 class OCPConnector(object):
     server_email2agent = {}
@@ -30,6 +46,7 @@ class OCPConnector(object):
     def get_ocp_faircoin_address(self, agent_id):
         pass
         # https://ocp.freedomcoop.eu/work/agent/56/
+
     def get_server_users(self):
         users2emails = {}
         with open('env/ocp.users.json') as data_file:
@@ -55,7 +72,7 @@ class OCPConnector(object):
         query = """query($token: String) {
                       viewer(token: $token) { agent(id:""" + str(project_id) + """) { name
                           agentProcesses {
-                            name id
+                            name id  plannedStart plannedDuration
                             unplannedEconomicEvents { id note }
                             committedInputs { note id fulfilledBy { fulfilledBy { id }}}
                             inputs {
@@ -72,17 +89,18 @@ class OCPConnector(object):
         try:
             response = requests.get(issues_url,
                                     headers=headers,
-                                    params={'query': query, 'variables': token})
+                                    params={'query': query, 'variables': token}, timeout=30)
 
             return json.loads(response.text)
         except Exception:
-            logging.debug('Error with get OCP request')
+            logging.debug('Error getting OCP request from API')
 
         return None
 
     def parse_issues(self, issues, project_id, date_min, date_max):
         contributions = []
         processes = issues["data"]["viewer"]["agent"]["agentProcesses"]
+
         ocp_users = {}
         for p in processes:
             web_url = 'https://ocp.freedomcoop.eu/work/process-logging/{0}/'.format(p['id'])
@@ -90,6 +108,13 @@ class OCPConnector(object):
             voluntary_work = {}
             contributors = set()
             commitments = {}
+
+            if CHECK_PROCESS_DATES:
+                date_process_start = parse_date(p['plannedStart'])
+                duration_str = p['plannedDuration']
+                date_process_end = _add_ocp_duration_to_date(date_process_start, duration_str)
+                if date_min > date_process_end or date_max < date_process_start:
+                    continue
             # if p["isFinished"]:  disabled for the moment  bcs in OCW they are not finishing them.
             for c in p["committedInputs"]:
                 c_id = c["id"]
@@ -122,10 +147,17 @@ class OCPConnector(object):
                         # user_id = i['provider']['id']
                         username = slugify(i['provider']['name']).replace("-", "_")
                         user_id = i['provider']['id']
+                        alias = None
+                        email = None
+                        if int(user_id) in self.server_agent2email:
+                            email = self.server_agent2email[int(user_id)]
+                            if email in self.server_email2username:
+                                alias = self.server_email2username[email]
                         user_faircoinaddress = i['provider']['faircoinAddress']
                         if username not in ocp_users:
                             ocp_users[username] = {"ocp_username": username, "ocp_id": user_id,
-                                                   "ocp_faircoin_address": user_faircoinaddress}
+                                                   "ocp_faircoin_address": user_faircoinaddress,
+                                                   "email": email, "ocp_alias": alias}
                         # username = get_unique_username(key='ocp_id', value=user_id)
                         # if not username:
                         if _is_validated_comment(i['note']):
@@ -133,7 +165,7 @@ class OCPConnector(object):
                             continue
                         if i['action'] == "work" and i['start'] and 'affectedQuantity' in i:
                             date_str = i['start']
-                            date = parse(date_str)
+                            date = parse_date(date_str)
 
                             unit = i['affectedQuantity'].get('unit', None)
                             hours = i['affectedQuantity']["numericValue"]
@@ -201,25 +233,19 @@ class OCPConnector(object):
                         c_validation_msgs = []
                         c_validated = False
                         c_validators = []
-                        process_validators = validators.copy()
-                        if username in process_validators:
-                            process_validators.remove(username)
-                        if len(process_validators):
-                            c_validation_msgs.append('Process Validated by: {0}'.format(", ".join(process_validators)))
 
-                        if len(process_validators) < 2:
-                            c_validators = commitments[commitment_id]["validators"].copy()
-                            if username in c_validators:
-                                c_validators.remove(username)
-                            if len(c_validators):
-                                c_validation_msgs.append('Commitment validated by: {0}'.format(
-                                                         ", ".join(c_validators)))
+                        c_validators = commitments[commitment_id]["validators"].copy()
+                        if username in c_validators:
+                            c_validators.remove(username)
+                        if len(c_validators):
+                            c_validation_msgs.append('Commitment validated by: {0}'.format(
+                                                     ", ".join(c_validators)))
 
-                        total_validations = len(c_validators) + len(process_validators)
+                        total_validations = len(c_validators)
                         if total_validations >= 2:
                             c_validated = True
                         else:
-                            c_validation_msgs.append('Still needs {0} commitment or process validation(s)'.format(
+                            c_validation_msgs.append('Still needs {0} commitment validation(s)'.format(
                                                      2 - total_validations))
 
                         contributions.append({'id': p['id'],
