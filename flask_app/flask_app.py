@@ -244,6 +244,10 @@ def calculate():
     results['alerts'] = alerts
     results['users'] = users_to_be_paid
 
+    for _, details in users_to_be_paid.items():
+        if details.get('email', None):
+            print(details['email'])
+
     return flask.jsonify(results)
 
 
