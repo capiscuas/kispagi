@@ -56,7 +56,9 @@ except Exception:
 def calculate():
 
     special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
-                       'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH'}
+                       'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH',
+                       'sofocles_dans': 'fGFmLSn8WkcXvwxkVa9wKGkJ51NV9wCjo8',
+                       'cegroj': 'fYGHKViDbvsuHqUPSGDyU2vJtGYQmwVHyn'}
     data = flask.request.get_json()
     settings, areas, users = _parse_calculate_data(data)
     total_budget = settings['budget-euros'] + settings['budget-faircoins'] * FAIR2EUR_PRICE
