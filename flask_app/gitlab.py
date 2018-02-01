@@ -107,19 +107,20 @@ class GitlabConnector(object):
                         username = ocp_username
 
                     seconds_spent = i['time_stats']['total_time_spent']
-                    comments = self.get_comments(project_id=project_id, issue_iid=i['iid'])
-                    validation_msgs = []
-                    validated = False
-                    is_voluntary = False
+
                     due_date_str = i['due_date']
                     if due_date_str is not None:
                         due_date = parse(due_date_str)
                         if date_min > due_date or date_max < due_date:
                             continue
 
+                    validation_msgs = []
+                    validated = False
+                    is_voluntary = False
                     if 'VOLUNTARY' in i['labels'] or '*VOLUNTARY' in i['labels']:
                         is_voluntary = True
                     else:
+                        comments = self.get_comments(project_id=project_id, issue_iid=i['iid'])
                         for author, comment in comments:
                             if _is_validated_comment(comment):
                                 if author != username:
