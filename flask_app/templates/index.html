@@ -125,10 +125,10 @@
                   total_time_voluntary = userdata.total_time_voluntary
                   total_time_voluntary_str = toHHMMSS(userdata.total_time_voluntary);
               }
-              row_html += '<td> ' + voluntary_tasks_html + '</td>';
-              row_html += '<td> ' + to_validate_tasks_html + '</td>';
-              row_html += '<td>' + validated_tasks_html + '</td>';
-              row_html += '<td>' + total_time_spent_str + '</td>';
+              row_html += '<td bgcolor="#a8e2ad"> ' + voluntary_tasks_html + '</td>';
+              row_html += '<td bgcolor="#e2a8a8"> ' + to_validate_tasks_html + '</td>';
+              row_html += '<td bgcolor="#a8b7e2">' + validated_tasks_html + '</td>';
+              row_html += '<td bgcolor="#a8b7e2"><b>' + total_time_spent_str + '</b></td>';
               row_html += '<input type="hidden" name="time-'+ area_id + '--' + username + '" value="'+total_time_spent+'" />'
               row_html += '<input type="hidden" name="voluntary-time-'+ area_id + '--' + username + '" value="'+total_time_voluntary+'" />'
               row_html += '</tr>';
@@ -189,7 +189,7 @@
 </script>
 
 {% for area in areas %}
- <center><font color="#668000" size="4"><strong> {{ area.name }} </strong></font></center>
+ <center><font color="#a8b7e2" size="3"><strong> {{ area.name }} </strong></font></center>
   <div class="container-fluid">
       <div id="alerts-{{area.id}}"> </div>
 
