@@ -10,6 +10,12 @@
       }
   table{font-size: small;
         table-layout: auto;}
+
+  .alert-success {
+      color: #3c763d;
+      background-color: #D6EE8E;
+      border-color: #d6e9c6
+      }
   </style>
 
       <script type="text/javascript">
@@ -108,7 +114,7 @@
               var identifier = area_id + '--' + username;
               row_html += '<tr>';
               row_html += '<td>' + username + '</td>';
-              row_html += '<td style="width:200px;"><div id='+ identifier +'></div><input  type="hidden" type="number" name="fix-income-'+ identifier + '" />' +
+              row_html += '<td><div id='+ identifier +'></div><input  type="hidden" type="number" name="fix-income-'+ identifier + '" />' +
               '<input  type="hidden" type="number" name="fix-hours-'+ identifier + '" /></td>';
 
             //   row_html += '<td><input style="width:60px;" type="number" name="volunteer-hours-'+ area_id + '|' + username + '" value="0" min="0" /></td>';
@@ -130,10 +136,10 @@
                   total_time_voluntary = userdata.total_time_voluntary
                   total_time_voluntary_str = toHHMMSS(userdata.total_time_voluntary);
               }
-              row_html += '<td bgcolor="#a8e2ad"> ' + voluntary_tasks_html + '</td>';
-              row_html += '<td bgcolor="#e2a8a8"> ' + to_validate_tasks_html + '</td>';
-              row_html += '<td bgcolor="#a8b7e2">' + validated_tasks_html + '</td>';
-              row_html += '<td bgcolor="#a8b7e2"><b>' + total_time_spent_str + '</b></td>';
+              row_html += '<td bgcolor="#E4C3F9" width="15%"> ' + voluntary_tasks_html + '</td>';
+              row_html += '<td bgcolor="#F5BCA9" width="30%"> ' + to_validate_tasks_html + '</td>';
+              row_html += '<td bgcolor="#D6EE8E" width="30%">' + validated_tasks_html + '</td>';
+              row_html += '<td bgcolor="#D6EE8E"><b>' + total_time_spent_str + '</b></td>';
               row_html += '<input type="hidden" name="time-'+ area_id + '--' + username + '" value="'+total_time_spent+'" />'
               row_html += '<input type="hidden" name="voluntary-time-'+ area_id + '--' + username + '" value="'+total_time_voluntary+'" />'
               row_html += '</tr>';
@@ -194,7 +200,11 @@
 </script>
 
 {% for area in areas %}
- <center><font color="#a8b7e2" size="3"><strong> {{ area.name }} </strong></font></center>
+ <center>
+     <i class="glyphicon glyphicon-menu-left"></i>
+     <font size="3"><strong> {{ area.name }} </strong></font>
+     <i class="glyphicon glyphicon-menu-right"></i>
+ </center>
   <div class="container-fluid">
       <div id="alerts-{{area.id}}"> </div>
 
@@ -221,9 +231,11 @@
     </script>
 <hr>
 {% endfor %}
+
 <center>
-<button class="centered btn-lg btn-custom" style="color: #fff !important; background-color: #668000 !important;" id="calculateBtn">Click to Calculate</button>
-<a target="_blank" href="https://git.fairkom.net/faircoop/Tech/Kispagi/wikis/Help" class="centered btn-lg btn-custom" style="color: #fff !important; background-color: #672178 !important;">Help/Suggestions</a>
+<button class="centered btn-lg btn-custom" style="color: #000 !important; background-color: #D6EE8E !important;" id="calculateBtn">Click to Calculate</button>
+<br/><br/>
+<a target="_blank" href="https://git.fairkom.net/faircoop/Tech/Kispagi/wikis/Help" class="centered btn btn-custom" style="color: #fff !important; background-color: #672178 !important;">Help/Suggestions</a>
 </center>
 </form>
 
