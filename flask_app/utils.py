@@ -80,11 +80,15 @@ def _parse_calculate_data(data):
             area_user = k[len('fix-hours-'):].split('--')
             area = area_user[0]
             username = area_user[1]
+            if not v:
+                v = 0
             _add_user_value(areas, area, username, 'fix-hours', float2dec(float(v)))
         elif k.startswith('fix-income-'):
             area_user = k[len('fix-income-'):].split('--')
             area = area_user[0]
             username = area_user[1]
+            if not v:
+                v = 0
             _add_user_value(areas, area, username, 'fix-income', float2dec(float(v)))
         elif k.startswith('time-'):
             area_user = k[len('time-'):].split('--')
