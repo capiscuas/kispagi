@@ -312,7 +312,7 @@ def index():
                         ocp_error_connection = True
                     else:
                         try:
-                            contributions_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
+                            contributions_project_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
                         except Exception:
                             ocp_error_connection = True
 
@@ -321,7 +321,7 @@ def index():
                         all_users[username].update(user)
                     else:
                         all_users[username] = user
-                contributions_ocp += contributions_ocp
+                contributions_ocp += contributions_project_ocp
 
         contributions = contributions_gitlab + contributions_ocp
 
