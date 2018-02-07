@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import os
 from collections import defaultdict
 import requests
 
@@ -205,13 +203,10 @@ class OCPConnector(object):
                                                                                'title': title})
                                     voluntary_work[username]['seconds_spent'] += seconds_spent
 
-                validators = set()
                 for commitment_id, commitment in commitments.items():
                     for username in commitment['pre_validators']:
-                        if commitment_id == 'unplanned':  # Process validation
-                            validators.add(username)
-                        else:  # Requirement validation
-                            commitments[commitment_id]["validators"].add(username)
+                        # Requirement validation
+                        commitments[commitment_id]["validators"].add(username)
 
                 # Voluntary work
                 for username, c in voluntary_work.items():
