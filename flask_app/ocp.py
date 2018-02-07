@@ -142,7 +142,6 @@ class OCPConnector(object):
                 for commitment_id, commitment in commitments.items():
                     for w_id in commitment['events']:
                         i = inputs[w_id]
-                        # user_id = i['provider']['id']
                         username = slugify(i['provider']['name']).replace("-", "_")
                         user_id = i['provider']['id']
                         alias = None
