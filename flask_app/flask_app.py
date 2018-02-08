@@ -10,6 +10,7 @@ import calendar
 import logging
 from datetime import datetime
 from collections import defaultdict
+import requests
 
 from gitlab import GitlabConnector
 from ocp import OCPConnector
@@ -70,7 +71,6 @@ def calculate():
     users_to_be_paid = {}
     calculation_successful = True
     price_hour = 10
-
 
     for area_name, area in areas.items():
         alerts = []
@@ -305,16 +305,15 @@ def index():
             if project_id:
                 ocp_users = {}
                 logging.debug('OCP project_id: {0}'.format(project_id))
-
+                contributions_project_ocp = []
                 if not ocp_error_connection:
-                    issues = ocp.get_data(project_id=project_id)
-                    if issues is None:
+                    try:
+                        issues = ocp.get_data(project_id=project_id)
+                        contributions_project_ocp, ocp_users = ocp.parse_issues(issues, project_id,
+                                                                                date_min, date_max, gitlab)
+                    except requests.exceptions.ReadTimeout:
                         ocp_error_connection = True
-                    else:
-                        try:
-                            contributions_project_ocp, ocp_users = ocp.parse_issues(issues, project_id, date_min, date_max)
-                        except Exception:
-                            ocp_error_connection = True
+
 
                 for username, user in ocp_users.items():
                     if username in all_users:

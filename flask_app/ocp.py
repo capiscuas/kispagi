@@ -92,10 +92,11 @@ class OCPConnector(object):
             return json.loads(response.text)
         except Exception:
             logging.debug('Error getting OCP request from API')
+            raise
 
         return None
 
-    def parse_issues(self, issues, project_id, date_min, date_max):
+    def parse_issues(self, issues, project_id, date_min, date_max, gitlab):
         contributions = []
         processes = issues["data"]["viewer"]["agent"]["agentProcesses"]
 
@@ -142,7 +143,7 @@ class OCPConnector(object):
                 for commitment_id, commitment in commitments.items():
                     for w_id in commitment['events']:
                         i = inputs[w_id]
-                        username = slugify(i['provider']['name']).replace("-", "_")
+                        ocp_slug_username = slugify(i['provider']['name']).replace("-", "_")
                         user_id = i['provider']['id']
                         alias = None
                         email = None
@@ -151,12 +152,19 @@ class OCPConnector(object):
                             if email in self.server_email2username:
                                 alias = self.server_email2username[email]
                         user_faircoinaddress = i['provider']['faircoinAddress']
+                        gitlab_username = gitlab.server_users_emails.get(email, None)
+                        if gitlab_username:
+                            username = gitlab_username
+                        else:
+                            username = ocp_slug_username
+
                         if username not in ocp_users:
-                            ocp_users[username] = {"ocp_username": username, "ocp_id": user_id,
+                            ocp_users[username] = {"ocp_username": ocp_slug_username, "ocp_id": user_id,
                                                    "ocp_faircoin_address": user_faircoinaddress,
                                                    "email": email, "ocp_alias": alias}
-                        # username = get_unique_username(key='ocp_id', value=user_id)
-                        # if not username:
+                            if gitlab_username:
+                                ocp_users[username]['gitlab_username'] = gitlab_username
+
                         if _is_validated_comment(i['note']):
                             commitments[commitment_id]["pre_validators"].add(username)
                             continue

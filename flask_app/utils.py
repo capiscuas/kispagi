@@ -104,17 +104,7 @@ def _parse_calculate_data(data):
     return settings, areas, users
 
 
-users_db = [{'ocp_username': 'maro', 'gitlab': 'Marohf'},
-            {'ocp_username': 'IvanEsperanto', 'gitlab': 'kapis'},
-            {'ocp_username': 'pilikum_l_kerill', 'gitlab': 'pilikum'},
-            {'ocp_username': 'teresa_sempere', 'gitlab': 'tereseta'},
-            {'ocp_username': 'guy_james', 'gitlab': 'guyjames'},
-            {'ocp_username': 'mario', 'gitlab': 'MarioLiebrenz'},
-            {'ocp_username': 'chris_zumbrunn', 'gitlab': 'zumbrunn'},
-            {'ocp_username': 'alex_berbel', 'gitlab': 'al-demon1'},
-            {'ocp_username': 'vieillescaze_serge', 'gitlab': 'serge.vi'},
-            {'ocp_username': 'onix228', 'gitlab': 'onix228'},
-            {'ocp_username': 'Sebastian', 'gitlab': 'sebastian.kuehs'}]
+users_db = []
 
 validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
 
@@ -134,7 +124,7 @@ def get_unique_username(key=None, value=None):
         for u in users_db:
             if value == u[key]:
                 return u['ocp_username']
-    if key == 'ocp_id':
+    if key == 'ocp_username':
         for u in users_db:
             if value == u[key]:
                 return u['gitlab']

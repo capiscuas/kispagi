@@ -6,7 +6,7 @@ import requests
 from dateutil.parser import parse
 from slugify import slugify
 
-from utils import _is_validated_comment, get_unique_username
+from utils import _is_validated_comment
 logging.basicConfig(level=logging.DEBUG)
 
 try:
@@ -102,7 +102,7 @@ class GitlabConnector(object):
 
                     email = self.server_users[username]['email']
                     # ocp_api_users_by_email[email]
-                    ocp_username = get_unique_username(key='gitlab', value=username)
+                    # ocp_username = get_unique_username(key='gitlab', value=username)
                     # username = get_user_profile(self, gitlab_username=username)
                     user_profile = {"gitlab_username": username, 'email': email}
                     if self.server_users[username]['location'] and self.server_users[username]['location'].startswith('f'):
