@@ -4,6 +4,7 @@
 import logging
 import requests
 from dateutil.parser import parse
+from slugify import slugify
 
 from utils import _is_validated_comment, get_unique_username
 logging.basicConfig(level=logging.DEBUG)
@@ -21,6 +22,7 @@ except Exception:
 
 class GitlabConnector(object):
     server_users = {}
+    server_users_emails = {}
 
     def get_server_users(self):
         all_users = []
@@ -36,9 +38,12 @@ class GitlabConnector(object):
 
         for user in all_users:
             username = user['username']
-            self.server_users[username] = {'email': user['email'], 'gitlab_id': user['id'],
+            email = user['email']
+            self.server_users[username] = {'email': email, 'gitlab_id': user['id'],
                                            'location': user['location'],
-                                           'gitlab_name': user['name']}
+                                           'gitlab_name': user['name'], 'gitlab_username': username}
+            if email:
+                self.server_users_emails[email] = username
 
     def filter_time_from_issue_notes(self, notes):
         pass
@@ -105,6 +110,9 @@ class GitlabConnector(object):
                     if ocp_username:
                         user_profile["ocp_username"] = ocp_username
                         username = ocp_username
+                    else:
+                        if self.server_users[username]['gitlab_name']:
+                            username = slugify(self.server_users[username]['gitlab_name']).replace("-", "_")
 
                     seconds_spent = i['time_stats']['total_time_spent']
 
