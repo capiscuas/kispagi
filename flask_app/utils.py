@@ -104,7 +104,8 @@ def _parse_calculate_data(data):
     return settings, areas, users
 
 
-users_db = []
+users_db = [{'ocp_username': 'berzas', 'gitlab': 'berzas_berzas'},
+            {'ocp_username': 'IvanEsperanto', 'gitlab': 'kapis'}]
 
 validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
 
@@ -186,7 +187,7 @@ fixed_month_values = {
                     {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
                     {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
-                    {'username': 'al-demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'al_demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]}
 }

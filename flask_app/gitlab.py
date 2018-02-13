@@ -6,7 +6,7 @@ import requests
 from dateutil.parser import parse
 from slugify import slugify
 
-from utils import _is_validated_comment
+from utils import _is_validated_comment, get_unique_username
 logging.basicConfig(level=logging.DEBUG)
 
 try:
@@ -102,17 +102,20 @@ class GitlabConnector(object):
 
                     email = self.server_users[username]['email']
                     # ocp_api_users_by_email[email]
-                    # ocp_username = get_unique_username(key='gitlab', value=username)
+
                     # username = get_user_profile(self, gitlab_username=username)
                     user_profile = {"gitlab_username": username, 'email': email}
-                    if self.server_users[username]['location'] and self.server_users[username]['location'].startswith('f'):
+                    if self.server_users[username]['location'] and \
+                       self.server_users[username]['location'].startswith('f'):
                         user_profile["gitlab_faircoin_address"] = self.server_users[username]['location']
+
+                    if self.server_users[username]['gitlab_name']:
+                        username = slugify(self.server_users[username]['gitlab_name']).replace("-", "_")
+
+                    ocp_username = get_unique_username(key='gitlab', value=username)
                     if ocp_username:
                         user_profile["ocp_username"] = ocp_username
                         username = ocp_username
-                    else:
-                        if self.server_users[username]['gitlab_name']:
-                            username = slugify(self.server_users[username]['gitlab_name']).replace("-", "_")
 
                     seconds_spent = i['time_stats']['total_time_spent']
 
