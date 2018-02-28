@@ -142,6 +142,8 @@ class OCPConnector(object):
 
                 for commitment_id, commitment in commitments.items():
                     for w_id in commitment['events']:
+                        if w_id not in inputs:
+                            continue
                         i = inputs[w_id]
                         ocp_slug_username = slugify(i['provider']['name']).replace("-", "_")
                         user_id = i['provider']['id']
