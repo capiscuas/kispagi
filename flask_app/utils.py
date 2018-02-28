@@ -189,6 +189,17 @@ fixed_month_values = {
                     {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'al_demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]},
+
+    '02-2018': {'budget-faircoins': 8333.33,
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 500, 'area': 'commonmanagement'},
+                    {'username': 'javier_mckleyn', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'al_demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]}
 }
 
