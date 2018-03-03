@@ -161,7 +161,7 @@ class GitlabConnector(object):
                                           'is_voluntary': is_voluntary,
                                           'validated': validated,
                                           'validation_msgs': validation_msgs,
-                                          'task_title': "{0}".format(i['title']),
+                                          'task_title': i['title'],
                                           'total_time_spent': seconds_spent,
                                           'username': username})
 

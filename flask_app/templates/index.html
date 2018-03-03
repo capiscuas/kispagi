@@ -100,8 +100,10 @@
                   }
 
                   tooltip_html = '<p >'+ tooltip_html+ '</p>';
+
+                  $task_title = task.task_title.replace(/"/g , "'");
                   if(task.total_time_spent > 0){
-                      tasks_html += '<a target="_blank" data-toggle="popover" data-html=true data-placement="right" data-trigger="hover" title="'+task.task_title+'" data-content="'+unescapeHtml(tooltip_html)+'" href="'+task.url+'"><font color="'+ $color+'">#' + task.id +'</font></a>';
+                      tasks_html += '<a target="_blank" data-toggle="popover" data-html=true data-placement="right" data-trigger="hover" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'" href="'+task.url+'"><font color="'+ $color+'">#' + task.id +'</font></a>';
                       tasks_html +=  '('+toHHMMSS(task.total_time_spent)+') '
                   }
 
