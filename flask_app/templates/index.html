@@ -202,6 +202,7 @@
 </script>
 
 {% for area in areas %}
+{% if area.users%}
  <center>
      <i class="glyphicon glyphicon-menu-left"></i>
      <font size="3"><strong> {{ area.name }} </strong></font>
@@ -232,8 +233,9 @@
     $('#{{area.id}}-body').empty().append(table);
     </script>
 <hr>
-{% endfor %}
+{% endif %}
 
+{% endfor %}
 <center>
 <button class="centered btn-lg btn-custom" style="color: #000 !important; background-color: #D6EE8E !important;" id="calculateBtn">Click to Calculate</button>
 <br/><br/>
