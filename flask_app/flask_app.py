@@ -35,7 +35,8 @@ areas = [
     {'id': 'faircoopwebsite', 'name': 'Website/Forum/Wiki/Blog', 'gitlab': [21], 'ocp': [549]},
     {'id': 'kispagi', 'name': 'Kispagi tool for OCW', 'gitlab': [35], 'ocp': [None]},
     {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]},
-    {'id': 'usefaircoin', 'name': 'UseFaircoin Website', 'gitlab': [13], 'ocp': [None]},
+    {'id': 'usefaircoin', 'name': 'UseFaircoin', 'gitlab': [13], 'ocp': [None]},
+    {'id': 'coopfunding', 'name': 'CoopFunding', 'gitlab': [80], 'ocp': [None]},
     {'id': 'extension', 'name': 'FC Extension', 'gitlab': [None], 'ocp': [713]}
 ]
 
