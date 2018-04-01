@@ -13,7 +13,9 @@ Kispagi (which means to pay with kisses in Esperanto) is an app that connects to
     virtualenv -p /usr/bin/python3 venv
     #For python2
     virtualenv -p /usr/bin/python2 venv
-    source venv/bin/activate #to enter in the virtualenv
+
+### Enter the virtualenv
+    source venv/bin/activate
 
 ### Installing Requirements
     pip install flask requests python-dateutil python-slugify
