@@ -255,7 +255,7 @@ def calculate():
 @app.route('/')
 def index():
     alerts = []
-    month_param = flask.request.args.get('month', default='02-2018', type=str)
+    month_param = flask.request.args.get('month', default='03-2018', type=str)
     fname = '{0}.html'.format(month_param)
     if os.path.isfile(os.path.join('templates', fname)):
         logging.debug('Found Results template {0}'.format(fname))
