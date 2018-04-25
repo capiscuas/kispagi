@@ -19,7 +19,8 @@
   </style>
 
       <script type="text/javascript">
-          var $gitlab_color = "blue";
+          var $gitlab_color = "red";
+          var $redmine_color = "red";
           var $ocp_color = "red";
           function getParameterByName(name) {
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
@@ -75,11 +76,13 @@
                   tooltip_html = ''
                   if(task.type == 'GITLAB') {
                       $color = $gitlab_color;
-                      if(task.date) {
-                          tooltip_html = '<b>Date: </b>' + task.date + '<hr>'
-                      }
+
                   }
                   if(task.type == 'OCP') $color = $ocp_color;
+                  if(task.type == 'REDMINE') $color = $redmine_color;
+                  if(task.date) {
+                      tooltip_html = '<b>Date: </b>' + task.date + '<hr>'
+                  }
                   //if(task.note.indexOf("OCP") >= 0)  $color = "green";
 
 
@@ -167,7 +170,7 @@
         <img src="static/logo.png" width="50px">
         <a class="navbar-brand" href="#">Kispagi</a>
         <span>1 Faircoin = {{settings.FAIR2EUR_PRICE}}€</span>
-        <span><font color=red>#OCP</font> <font color=blue>#Gitlab</font></span>
+        <!-- <span><font color=red>#OCP</font> <font color=blue>#Gitlab</font> <font color=green>#Redmine</font></span> -->
      </div>
     <form class="navbar-form navbar-right" name="settingsForm" id="settingsForm">
 
@@ -178,7 +181,7 @@
           <input type="hidden" class="form-control" style="width:60px;" name="min-hour" value="5" min="0" />
           <!-- <span>Max EUR/month: </span> -->
           <input type="hidden" class="form-control" style="width:80px;" name="max-month" value="1200" min="0" />
-          <span>Budget in Faircoins: </span><input type="number" class="form-control" style="width:100px;" name="budget-faircoins" value="11111.12" min="0" />
+          <span>Budget in Faircoins: </span><input type="number" class="form-control" style="width:100px;" name="budget-faircoins" value="0" min="0" />
           <input type="hidden" name="budget-euros" value="0" min="0"  />
 
       </div>
@@ -217,10 +220,9 @@
               <thead> <tr>
                   <th>User</th>
                   <th>Fixed income</th>
-                  <!-- <th>Free hours</th> -->
-                  <th>Voluntary work<a href="#" data-toggle="tooltip" title="In Gitlab, work with label VOLUNTARY. In OCP, work needs to be unchecked the field 'is contribution'.">*</a></th>
-                  <th>Work not yet validated<a href="#" data-toggle="tooltip" title="In Gitlab, work with label COMPLETED, with hours spent, assigned to someone and with due date. In OCP, work needs dated within this month and have hours with 'is contribution'.">*</a></th>
-                  <th>Work validated<a href="#" data-toggle="tooltip" title="It needs at least 2 VALIDATED comments from somebody without contributed hours in the process/task.">*</a></th>
+                  <th>Voluntary work</th>
+                  <th>Work not yet validated</th>
+                  <th>Work validated<a href="#" data-toggle="tooltip" title="It needs at least 2 Validations from coworkers that verified the work was done correctly.">*</a></th>
                   <th>Time validated in Area</th>
               </tr></thead>
               <tbody id="{{area.id}}-body"> </tbody>
