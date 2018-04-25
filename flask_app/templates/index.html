@@ -188,11 +188,11 @@
     </form>
   </div>
 </nav>
-
-<br/>
-<hr>
-  {% import 'months.html' as months %} {{months}}
 </div>
+
+  {% import 'months.html' as months %} {{months}}
+<hr>
+<br/>
 <div id="top-alerts"> </div>
 {% for alert in alerts %}
     <div class="alert alert-{{alert.type}}"><strong>{{alert.msg}}</strong></div>
