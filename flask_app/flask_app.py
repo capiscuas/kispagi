@@ -25,19 +25,19 @@ FAIR2EUR_PRICE = 1.2
 
 
 areas = [
-    {'id': 'communication', 'name': 'Media/Communication', 'gitlab': [12], 'ocp': [437]},
-    {'id': 'welcome', 'name': 'Welcome/Support/Human Cares', 'gitlab': [15], 'ocp': [455]},
-    {'id': 'commonmanagement', 'name': 'Common Management', 'gitlab': [41], 'ocp': [474]},
-    {'id': 'circulareconomy', 'name': 'Circular Economy', 'gitlab': [38], 'ocp': [459]},
-    {'id': 'techarea', 'name': 'Tech Area', 'gitlab': [28], 'ocp': [475]},
-    {'id': 'fairmarket', 'name': 'FairMarket', 'gitlab': [16], 'ocp': [512]},
-    {'id': 'ocpdev', 'name': 'OCP Development', 'gitlab': [None], 'ocp': [547, 18]},
-    {'id': 'faircoopwebsite', 'name': 'Website/Forum/Wiki/Blog', 'gitlab': [21], 'ocp': [549]},
-    {'id': 'kispagi', 'name': 'Kispagi tool for OCW', 'gitlab': [35], 'ocp': [None]},
-    {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': [34], 'ocp': [None]},
-    {'id': 'usefaircoin', 'name': 'UseFaircoin', 'gitlab': [13], 'ocp': [None]},
-    {'id': 'coopfunding', 'name': 'CoopFunding', 'gitlab': [80], 'ocp': [None]},
-    {'id': 'extension', 'name': 'FC Extension', 'gitlab': [None], 'ocp': [713]}
+    {'id': 'communication', 'name': 'Media/Communication', 'gitlab': 12, 'ocp': [437], 'redmine': ['media-communication']},
+    {'id': 'welcome', 'name': 'Welcome/Support/Human Cares', 'gitlab': 15, 'ocp': [455], 'redmine': ['welcome-support-education-human-cares']},
+    {'id': 'commonmanagement', 'name': 'Common Management', 'gitlab': 41, 'ocp': [474], 'redmine': ['common-management']},
+    {'id': 'circulareconomy', 'name': 'Circular Economy', 'gitlab': 38, 'ocp': [459], 'redmine': ['circular-economy']},
+    {'id': 'techarea', 'name': 'Tech Area', 'gitlab': 28, 'ocp': [475], 'redmine': ['tech-area']},
+    {'id': 'fairmarket', 'name': 'FairMarket', 'gitlab': 16, 'ocp': [512], 'redmine': ['fairmarket']},
+    {'id': 'ocpdev', 'name': 'OCP Development',  'ocp': [547, 18]},
+    {'id': 'faircoopwebsite', 'name': 'Website/Forum/Wiki/Blog', 'gitlab': 21, 'ocp': [549], 'redmine': ['fair-coop-website']},
+    {'id': 'kispagi', 'name': 'Kispagi', 'gitlab': 35, 'redmine': ['kispagi']},
+    {'id': 'invoices', 'name': 'invoices.freedomcoop.eu', 'gitlab': 34, 'redmine': ['freedomcoop-invoices']},
+    {'id': 'usefaircoin', 'name': 'UseFaircoin', 'gitlab': 13, 'redmine': ['usefaircoin']},
+    {'id': 'coopfunding', 'name': 'CoopFunding', 'gitlab': 80, 'redmine': ['coopfunding']},
+    {'id': 'extension', 'name': 'Extension', 'ocp': [713], 'redmine': ['extension']}
 ]
 
 try:
@@ -290,7 +290,13 @@ def index():
     for area in areas:
         contributions_gitlab = []
         contributions_ocp = []
+
         logging.debug('Checking area: {0}'.format(area['name']))
+        contributions_redmine = []
+        for project_id in area.get('redmine', []):
+            contributions, redmine_users = redmine.get_issues(project_id, date_min, date_max)
+            for username, user in redmine_users.items():
+                all_users[username].update(user)
 
         project_id = area['gitlab'][0]
         if project_id:
@@ -301,8 +307,14 @@ def index():
                     all_users[username].update(user)
                 else:
                     all_users[username] = user
+        remunerated_work, voluntary_work = ocw_hours.filter_by_remuneration(contributions)
+        remunerated_work = ocw_hours.validate_remunerations(remunerated_work)
 
         for project_id in area['ocp']:
+        contributions_redmine = []
+        for x in chain(remunerated_work.values(), voluntary_work.values()):
+            for w in x.values():
+                contributions_redmine.append(w)
             if project_id:
                 ocp_users = {}
                 logging.debug('OCP project_id: {0}'.format(project_id))
