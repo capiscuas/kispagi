@@ -11,7 +11,7 @@ from slugify import slugify
 import json
 import logging
 
-from utils import _is_validated_comment
+import validation
 logging.basicConfig(level=logging.DEBUG)
 
 try:
@@ -40,10 +40,26 @@ class OCPConnector(object):
     server_email2agent = {}
     server_agent2email = {}
     server_email2username = {}
+    parent = None
 
-    def get_ocp_faircoin_address(self, agent_id):
-        pass
-        # https://ocp.freedomcoop.eu/work/agent/56/
+    def __init__(self, parent):
+        self.parent = parent
+
+    def getUserDetails(self, user_id, user_fullname):
+        alias = None
+        email = None
+        ocp_slug_username = slugify(user_fullname).replace("-", "_")
+        if int(user_id) in self.server_agent2email:
+            email = self.server_agent2email[int(user_id)]
+            if email in self.server_email2username:
+                alias = self.server_email2username[email]
+
+        gitlab_username = self.parent.gitlab.server_users_emails.get(email, None)
+        if gitlab_username:
+            username = gitlab_username
+        else:
+            username = ocp_slug_username
+        return username, email, alias
 
     def get_server_users(self):
         users2emails = {}
@@ -77,6 +93,7 @@ class OCPConnector(object):
                               id start
                               provider {id name faircoinAddress} action note requestDistribution
                               affectedQuantity{ numericValue unit {name}} note
+                              validations { id validationDate validatedBy { id name } }
                             }
                             processClassifiedAs {name} plannedDuration isFinished note
                           }
@@ -96,15 +113,13 @@ class OCPConnector(object):
 
         return None
 
-    def parse_issues(self, issues, project_id, date_min, date_max, gitlab):
+    def parse_issues(self, issues, project_id, date_min, date_max):
         contributions = []
         processes = issues["data"]["viewer"]["agent"]["agentProcesses"]
 
         ocp_users = {}
         for p in processes:
             web_url = 'https://ocp.freedomcoop.eu/work/process-logging/{0}/'.format(p['id'])
-            process_work = {}
-            voluntary_work = {}
             contributors = set()
             commitments = {}
 
@@ -145,29 +160,18 @@ class OCPConnector(object):
                         if w_id not in inputs:
                             continue
                         i = inputs[w_id]
-                        ocp_slug_username = slugify(i['provider']['name']).replace("-", "_")
+
+                        user_fullname = i['provider']['name']
                         user_id = i['provider']['id']
-                        alias = None
-                        email = None
-                        if int(user_id) in self.server_agent2email:
-                            email = self.server_agent2email[int(user_id)]
-                            if email in self.server_email2username:
-                                alias = self.server_email2username[email]
-                        user_faircoinaddress = i['provider']['faircoinAddress']
-                        gitlab_username = gitlab.server_users_emails.get(email, None)
-                        if gitlab_username:
-                            username = gitlab_username
-                        else:
-                            username = ocp_slug_username
+                        username, email, alias = self.getUserDetails(user_id, user_fullname)
 
                         if username not in ocp_users:
-                            ocp_users[username] = {"ocp_username": ocp_slug_username, "ocp_id": user_id,
+                            user_faircoinaddress = i['provider']['faircoinAddress']
+                            ocp_users[username] = {"ocp_username": username, "ocp_id": user_id,
                                                    "ocp_faircoin_address": user_faircoinaddress,
                                                    "email": email, "ocp_alias": alias}
-                            if gitlab_username:
-                                ocp_users[username]['gitlab_username'] = gitlab_username
 
-                        if _is_validated_comment(i['note']):
+                        if validation._is_validated_comment(i['note']):
                             commitments[commitment_id]["pre_validators"].add(username)
                             continue
                         if i['action'] == "work" and i['start'] and 'affectedQuantity' in i:
@@ -185,83 +189,34 @@ class OCPConnector(object):
                                 if date_min > date or date_max < date:
                                     continue
 
-                                title = ''
+                                i_title = ''
                                 if i['note']:
                                     if len(i['note']) > 100:
-                                        title = i['note'][:100] + u'…'
+                                        i_title = i['note'][:100] + u'…'
                                     else:
-                                        title = i['note']
+                                        i_title = i['note']
 
                                 # Events are just informative to show in the popup window
-                                if i['requestDistribution']:  # If not voluntary work
-                                    if username not in process_work:
-                                        process_work[username] = {commitment_id: {'seconds_spent': 0, 'events': []}}
-                                    if commitment_id not in process_work[username]:
-                                        process_work[username][commitment_id] = {'seconds_spent': 0, 'events': []}
-                                    process_work[username][commitment_id]['seconds_spent'] += seconds_spent
+                                kispagi_validations = []
+                                validations = i.get('validations', [])
+                                for v in validations:
+                                    validator, email, alias = self.getUserDetails(v['validatedBy']["id"], v['validatedBy']["name"])
+                                    validation_date = parse_date(v['validationDate'])
+                                    kispagi_validations.append({'validator': validator, 'date': validation_date})
 
-                                    commitments[commitment_id]["contributors"].add(username)
-                                    process_work[username][commitment_id]['events'].append({'date': date_str,
-                                                                                            'seconds': seconds_spent,
-                                                                                            'title': title})
-                                else:
-                                    if username not in voluntary_work:
-                                        voluntary_work[username] = {'seconds_spent': 0, 'events': []}
-                                    voluntary_work[username]['events'].append({'date': date_str,
-                                                                               'seconds': seconds_spent,
-                                                                               'title': title})
-                                    voluntary_work[username]['seconds_spent'] += seconds_spent
+                                c_title = commitments[commitment_id]['title']
+                                contributions.append({'id': i['id'],#'{}:{}'.format(p['id'], commitment_id),
+                                                      'type': 'OCP',
+                                                      'date': date_str,
+                                                      'url': web_url,
+                                                      'is_voluntary': not i['requestDistribution'],
+                                                      'validations': kispagi_validations,
+                                                      'validation_msgs': [],
+                                                      'validated': False,
+                                                      'task_title': p['name'],
+                                                      'task_comments': '{}:{}'.format(c_title, i_title),
+                                                      'total_time_spent': seconds_spent,
+                                                      'username': username})
 
-                for commitment_id, commitment in commitments.items():
-                    for username in commitment['pre_validators']:
-                        # Requirement validation
-                        commitments[commitment_id]["validators"].add(username)
-
-                # Voluntary work
-                for username, c in voluntary_work.items():
-                    contributions.append({'id': p['id'],
-                                          'type': 'OCP',
-                                          'username': username,
-                                          'date': None,
-                                          'url': web_url,
-                                          'is_voluntary': True,
-                                          'validated': False,
-                                          'validation_msgs': [],
-                                          'task_title': p['name'],
-                                          'events': c['events'],
-                                          'total_time_spent': c['seconds_spent']})
-
-                # Not Voluntary work
-                for username, user_commitments in process_work.items():
-                    for commitment_id, c in user_commitments.items():
-                        c_validation_msgs = []
-                        c_validated = False
-                        c_validators = []
-
-                        c_validators = commitments[commitment_id]["validators"].copy()
-                        if username in c_validators:
-                            c_validators.remove(username)
-                        if len(c_validators):
-                            c_validation_msgs.append('Commitment validated by: {0}'.format(
-                                                     ", ".join(c_validators)))
-
-                        total_validations = len(c_validators)
-                        if total_validations >= 2:
-                            c_validated = True
-                        else:
-                            c_validation_msgs.append('Still needs {0} commitment validation(s)'.format(
-                                                     2 - total_validations))
-
-                        contributions.append({'id': p['id'],
-                                              'type': 'OCP',
-                                              'username': username,
-                                              'date': None,
-                                              'url': web_url,
-                                              'is_voluntary': False,
-                                              'validated': c_validated,
-                                              'validation_msgs': c_validation_msgs,
-                                              'task_title': p['name'] + ' : ' + commitments[commitment_id]['title'],
-                                              'events': c['events'],
-                                              'total_time_spent': c['seconds_spent']})
 
         return contributions, ocp_users
