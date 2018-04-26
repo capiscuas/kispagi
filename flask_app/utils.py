@@ -3,6 +3,8 @@
 
 from __future__ import division
 
+FAIR2EUR_PRICE = 1.2
+
 
 def transform_int(number):
     string = str(number).split('.')
@@ -107,17 +109,10 @@ def _parse_calculate_data(data):
 users_db = [{'ocp_username': 'berzas', 'gitlab': 'berzas_berzas'},
             {'ocp_username': 'IvanEsperanto', 'gitlab': 'kapis'}]
 
-validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
-
-
-def _is_validated_comment(comment):
-    if comment:
-        comment = comment.replace("#", "").replace(".", "").replace(",", "").strip()
-        if comment.split():
-            first_word = comment.split()[0]
-            return first_word.upper() in validated_strings
-
-    return False
+special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
+                   'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH',
+                   'sofocles_dans': 'fGFmLSn8WkcXvwxkVa9wKGkJ51NV9wCjo8',
+                   'cegroj': 'fYGHKViDbvsuHqUPSGDyU2vJtGYQmwVHyn'}
 
 
 def get_unique_username(key=None, value=None):
@@ -204,7 +199,17 @@ fixed_month_values = {
     '03-2018': {'budget-faircoins': 8333.33,
                 'users': [
                     {'username': 'maro', 'fix_hours': 80, 'fix_income': 500, 'area': 'commonmanagement'},
-                    {'username': 'javier_mckleyn', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'javierstb', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
+                    {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
+                    {'username': 'berzas', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
+                    {'username': 'cegroj', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
+                    {'username': 'al_demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
+                    {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]},
+    '04-2018': {'budget-faircoins': 8333.33,
+                'users': [
+                    {'username': 'maro', 'fix_hours': 80, 'fix_income': 500, 'area': 'commonmanagement'},
+                    {'username': 'javierstb', 'fix_hours': 96, 'fix_income': 600, 'area': 'commonmanagement'},
                     {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
                     {'username': 'berzas', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
@@ -226,4 +231,4 @@ def get_fixed_budget(month=None):
     if month in fixed_month_values:
         return fixed_month_values[month]['budget-faircoins']
     else:
-        return 11111.12  # 10,000 eur
+        return 0

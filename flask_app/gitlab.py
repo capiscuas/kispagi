@@ -6,7 +6,8 @@ import requests
 from dateutil.parser import parse
 from slugify import slugify
 
-from utils import _is_validated_comment, get_unique_username
+from utils import get_unique_username
+from validation import _is_validated_comment
 logging.basicConfig(level=logging.DEBUG)
 
 try:

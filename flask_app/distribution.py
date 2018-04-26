@@ -6,17 +6,11 @@ import traceback
 import logging
 from collections import defaultdict
 
-from utils import float2dec, _parse_calculate_data, FAIR2EUR_PRICE
+from utils import float2dec, _parse_calculate_data, FAIR2EUR_PRICE, special_wallets
 
-
-# @app.route('', methods=['POST'])
 
 def calculate():
 
-    special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
-                       'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH',
-                       'sofocles_dans': 'fGFmLSn8WkcXvwxkVa9wKGkJ51NV9wCjo8',
-                       'cegroj': 'fYGHKViDbvsuHqUPSGDyU2vJtGYQmwVHyn'}
     data = flask.request.get_json()
     alerts = []
     settings, areas, users = _parse_calculate_data(data)
