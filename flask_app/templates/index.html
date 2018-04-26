@@ -69,7 +69,7 @@
 
 
           }
-          function generateUserTasksColumn(tasks){
+          function generateUserTasksColumn(badge_type, tasks){
               tasks_html = '';
               tasks.forEach(function(task){
                   $color = "red";
@@ -102,12 +102,39 @@
                       tooltip_html += $validations_html;
                   }
 
-                  tooltip_html = '<p >'+ tooltip_html+ '</p>';
 
+
+
+
+                  $tooltip_html = '<p>'+ tooltip_html+ '</p>';
                   $task_title = task.task_title.replace(/"/g , "'");
+                  $modal_popup = `
+                    <div class="modal fade" id="modal_`+task.id+`" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel">`+$task_title+`</h4>
+                        </div>
+                        <div class="modal-body">`+$tooltip_html+`
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Validate</button>
+                        </div>
+                      </div>
+                    </div>
+                   </div>`
+                  // PONER LINK A https://agent.fair.coop/#/validate/event/7615  o a redmine
+                  $('body').append($modal_popup);
                   if(task.total_time_spent > 0){
-                      tasks_html += '<a target="_blank" data-toggle="popover" data-html=true data-placement="right" data-trigger="hover" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'" href="'+task.url+'"><font color="'+ $color+'">#' + task.id +'</font></a>';
-                      tasks_html +=  '('+toHHMMSS(task.total_time_spent)+') '
+                      // <font color="'+ $color+'">#' + task.id +'</font>
+                      // <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="popover" aria-haspopup="true" aria-expanded="false" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'">
+                      // $task_time = '<span class="badge '+badge_type+'">'+toHHMMSS(task.total_time_spent)+'</span>';
+                      $task_time_button ='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_'+task.id+'">'+toHHMMSS(task.total_time_spent)+'</button>'
+                      tasks_html += $task_time_button;
+                      // tasks_html += '<a target="_blank" data-toggle="popover" data-html=true data-placement="right" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'" >'+$task_time+'</a>';
+                      // tasks_html +=  '('++') '
                   }
 
               });
@@ -133,9 +160,9 @@
               var total_time_spent_str = '';
               var total_time_voluntary = 0;
               if(userdata){
-                  to_validate_tasks_html = generateUserTasksColumn(userdata.tasks);
-                  validated_tasks_html = generateUserTasksColumn(userdata.validated_tasks);
-                  voluntary_tasks_html = generateUserTasksColumn(userdata.voluntary_tasks);
+                  to_validate_tasks_html = generateUserTasksColumn('badge-warning', userdata.tasks);
+                  validated_tasks_html = generateUserTasksColumn('badge-success', userdata.validated_tasks);
+                  voluntary_tasks_html = generateUserTasksColumn('badge-info', userdata.voluntary_tasks);
                   total_time_spent_str = toHHMMSS(userdata.total_time_spent);
                   total_time_spent = userdata.total_time_spent
                   total_time_voluntary = userdata.total_time_voluntary
@@ -198,6 +225,7 @@
     <div class="alert alert-{{alert.type}}"><strong>{{alert.msg}}</strong></div>
 {% endfor %}
 
+
 <form id="areasForm" name="areasForm">
 <script>
     $month = getParameterByName('month');
@@ -241,7 +269,7 @@
 <center>
 <button class="centered btn-lg btn-custom" style="color: #000 !important; background-color: #D6EE8E !important;" id="calculateBtn">Click to Calculate</button>
 <br/><br/>
-<a target="_blank" href="https://git.fairkom.net/faircoop/Tech/Kispagi/wikis/Help" class="centered btn btn-custom" style="color: #fff !important; background-color: #672178 !important;">Help/Suggestions</a>
+<a target="_blank" href="https://t.me/joinchat/C7QpPkobsOLrH3YoTReVSA" class="centered btn btn-custom" style="color: #fff !important; background-color: #672178 !important;">Help/Suggestions</a>
 </center>
 </form>
 
