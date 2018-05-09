@@ -27,6 +27,8 @@ def filter_by_remuneration(contributions):
             voluntary_work[username][contribution_id].update(c)
             voluntary_work[username][contribution_id]['total_time_spent'] += seconds_spent
             voluntary_work[username][contribution_id]['events'].append(time_entry)
+        c['total_time_spent'] = seconds_spent
+
     return remunerated_work, voluntary_work
 
 

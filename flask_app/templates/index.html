@@ -16,6 +16,10 @@
       background-color: #D6EE8E;
       border-color: #d6e9c6
       }
+
+  .btn.nohover:hover {
+      cursor:default !important;
+  }
   </style>
 
       <script type="text/javascript">
@@ -53,10 +57,7 @@
               $.each(fixed_income_users, function(i, p) {
                   identifier = p.area + '--' + p.username
                   income_name = 'fix-income-'+ identifier
-                //   if($( "input[name="+income_name+"]" ).length == 0){
-                //       console.log('Does not exist' + income_name)
-                //       addUserRow(p.area, p.username, null);
-                //   }
+
                   hours_name = 'fix-hours-'+identifier
                   volunteer_name = 'volunteer-hours-'+identifier
                   $( "input[name="+income_name+"]" ).val(p.fix_income);
@@ -69,21 +70,16 @@
 
 
           }
-          function generateUserTasksColumn(badge_type, tasks){
+          function generateUserTasksColumn(column, tasks){
               tasks_html = '';
+              if(column == 'voluntary') $icon = '<span class="glyphicon glyphicon-heart"></span>&nbsp;';
+              else $icon = '';
               tasks.forEach(function(task){
                   $color = "red";
                   tooltip_html = ''
-                  if(task.type == 'GITLAB') {
-                      $color = $gitlab_color;
-
-                  }
-                  if(task.type == 'OCP') $color = $ocp_color;
-                  if(task.type == 'REDMINE') $color = $redmine_color;
                   if(task.date) {
                       tooltip_html = '<b>Date: </b>' + task.date + '<hr>'
                   }
-                  //if(task.note.indexOf("OCP") >= 0)  $color = "green";
 
 
                   if(task.hasOwnProperty('events')) {
@@ -103,9 +99,6 @@
                   }
 
 
-
-
-
                   $tooltip_html = '<p>'+ tooltip_html+ '</p>';
                   $task_title = task.task_title.replace(/"/g , "'");
                   $modal_popup = `
@@ -120,21 +113,23 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary">Validate</button>
+                          <a target="_blank" href="`+task.url+`" class="btn btn-primary active">Validate</a>
                         </div>
                       </div>
                     </div>
                    </div>`
-                  // PONER LINK A https://agent.fair.coop/#/validate/event/7615  o a redmine
                   $('body').append($modal_popup);
-                  if(task.total_time_spent > 0){
-                      // <font color="'+ $color+'">#' + task.id +'</font>
-                      // <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="popover" aria-haspopup="true" aria-expanded="false" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'">
-                      // $task_time = '<span class="badge '+badge_type+'">'+toHHMMSS(task.total_time_spent)+'</span>';
-                      $task_time_button ='<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_'+task.id+'">'+toHHMMSS(task.total_time_spent)+'</button>'
+                  $time_spent = task.total_time_spent;
+                  if($time_spent > 0){
+                      if($time_spent < 3600*5) $button_type = 'primary';
+                      else if($time_spent < 3600*10) $button_type = 'info';
+                      else if($time_spent < 3600*25) $button_type = 'success';
+                      else if($time_spent < 3600*50) $button_type = 'warning';
+                      else $button_type = 'danger';
+
+
+                      $task_time_button ='<button type="button" class="btn btn-'+$button_type+' btn-xs" data-toggle="modal" data-target="#modal_'+task.id+'">'+$icon+toHHMMSS(task.total_time_spent)+'</button>&nbsp;'
                       tasks_html += $task_time_button;
-                      // tasks_html += '<a target="_blank" data-toggle="popover" data-html=true data-placement="right" title="'+$task_title+'" data-content="'+unescapeHtml(tooltip_html)+'" >'+$task_time+'</a>';
-                      // tasks_html +=  '('++') '
                   }
 
               });
@@ -160,9 +155,9 @@
               var total_time_spent_str = '';
               var total_time_voluntary = 0;
               if(userdata){
-                  to_validate_tasks_html = generateUserTasksColumn('badge-warning', userdata.tasks);
-                  validated_tasks_html = generateUserTasksColumn('badge-success', userdata.validated_tasks);
-                  voluntary_tasks_html = generateUserTasksColumn('badge-info', userdata.voluntary_tasks);
+                  to_validate_tasks_html = generateUserTasksColumn('unvalidated', userdata.tasks);
+                  validated_tasks_html = generateUserTasksColumn('validated', userdata.validated_tasks);
+                  voluntary_tasks_html = generateUserTasksColumn('voluntary', userdata.voluntary_tasks);
                   total_time_spent_str = toHHMMSS(userdata.total_time_spent);
                   total_time_spent = userdata.total_time_spent
                   total_time_voluntary = userdata.total_time_voluntary
@@ -188,6 +183,8 @@
           };
 
       </script>
+      <link href="{{ url_for('generate_feed') }}"  rel="alternate"  type="application/atom+xml"
+            title="Kispagi OCW Recent Changes">
 </head>
 
 <body>
@@ -197,26 +194,30 @@
         <img src="static/logo.png" width="50px">
         <a class="navbar-brand" href="#">Kispagi</a>
         <span>1 Faircoin = {{settings.FAIR2EUR_PRICE}}€</span>
-        <!-- <span><font color=red>#OCP</font> <font color=blue>#Gitlab</font> <font color=green>#Redmine</font></span> -->
+        <br>Colours meaning:
+        <button type="button" class="btn btn-primary btn-xs nohover">&lt;5h</button>
+        <button type="button" class="btn btn-info btn-xs nohover">&lt;10h</button>
+        <button type="button" class="btn btn-success btn-xs nohover">&lt;25h</button>
+        <button type="button" class="btn btn-warning btn-xs nohover">&lt;50h</button>
+        <button type="button" class="btn btn-danger btn-xs nohover">&ge;50h</button>
      </div>
     <form class="navbar-form navbar-right" name="settingsForm" id="settingsForm">
 
       <div class="form-group">
-          <!-- <span>Max EUR/hour: </span> -->
           <input type="hidden" class="form-control" style="width:60px;" name="max-hour" value="10" min="0" />
-          <!-- <span>Min EUR/hour: </span> -->
           <input type="hidden" class="form-control" style="width:60px;" name="min-hour" value="5" min="0" />
-          <!-- <span>Max EUR/month: </span> -->
           <input type="hidden" class="form-control" style="width:80px;" name="max-month" value="1200" min="0" />
           <span>Budget in Faircoins: </span><input type="number" class="form-control" style="width:100px;" name="budget-faircoins" value="0" min="0" />
           <input type="hidden" name="budget-euros" value="0" min="0"  />
+          <div id="cache_time" class="small">
+              Kispagi data is updated every {{settings.cache_default_time_refresh}} min.<br/>Latest: <span id="cache_latest_time">{{settings.cache_latest_time}}</span> <a href="?cache=False"><span class="glyphicon glyphicon-refresh"></span></a>
+          </div>
 
       </div>
     </form>
   </div>
 </nav>
 </div>
-
   {% import 'months.html' as months %} {{months}}
 <hr>
 <br/>
@@ -298,29 +299,26 @@ function populateResults(results) {
 
                 $gitlab_user_html = '';
                 $ocp_user_html = '';
-                if(userdata.hasOwnProperty('gitlab_name')) {
-                        $name =  userdata['gitlab_name']
-                } else $name = username
-                if(userdata.hasOwnProperty('gitlab_username')) {
-                        link_profile = "https://git.fairkom.net/" + userdata['gitlab_username'];
-                        $gitlab_user_html = '<td><a target="_blank" href="'+ link_profile + '">'+ $name + '</a>';
-                }
-                if(userdata.hasOwnProperty('ocp_id')) {
-                    link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['ocp_id'];
-                    $ocp_user_html = '<td><a target="_blank" href="'+ link_profile + '">'+ $name + '</a>';
-                }
-                if (!$ocp_user_html && !$gitlab_user_html)  $html_users += '<td>'+$name;
 
-                if(userdata.hasOwnProperty('gitlab_faircoin_address')) {
-                    $address_html = '<br/><font color="'+$gitlab_color+'">'+ userdata['gitlab_faircoin_address']+'</font>'
-                    $html_users += $gitlab_user_html + $address_html
-                }else if(userdata.hasOwnProperty('ocp_faircoin_address')) {
-                    $address_html = '<br/><font color="'+$ocp_color+'">'+ userdata['ocp_faircoin_address']+'</font>'
-                    if($ocp_user_html)   $html_users += $ocp_user_html + $address_html
-                    else if($gitlab_user_html) $html_users += $gitlab_user_html + $address_html
-                }else{
-                    if($gitlab_user_html) $html_users += $gitlab_user_html + '<br/>(No wallet address)'
-                    else if($ocp_user_html) $html_users += $ocp_user_html + '<br/>(No wallet address)'
+                if(userdata.hasOwnProperty('redmine_id')) {
+                        link_profile = "https://org.fair.coop/users/" + userdata['redmine_id'];
+                        $user_html = '<a target="_blank" href="'+ link_profile + '">'+ userdata['redmine_username'] + '</a>';
+                }else if(userdata.hasOwnProperty('gitlab_username')) {
+                        link_profile = "https://git.fairkom.net/" + userdata['gitlab_username'];
+                        $user_html = '<a target="_blank" href="'+ link_profile + '">'+ userdata['gitlab_username'] + '</a>';
+                }else if(userdata.hasOwnProperty('ocp_id')) {
+                    link_profile = "https://ocp.freedomcoop.eu/work/agent/" + userdata['ocp_id'];
+                    $user_html = '<a target="_blank" href="'+ link_profile + '">'+ username + '</a>';
+                }else $user_html =  username;
+                $html_users += '<td>'+$user_html;
+
+                if(username != 'TOTAL'){
+                    if(userdata.hasOwnProperty('faircoin_address')) {
+                        $address_html = '<br/><font color="'+$ocp_color+'">'+ userdata['faircoin_address']+'</font>'
+                        $html_users += $address_html
+                    }else{
+                        $html_users += '<br/>(No wallet address)'
+                    }
                 }
                 $html_users += '</td>';
 

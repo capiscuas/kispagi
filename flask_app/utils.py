@@ -106,8 +106,9 @@ def _parse_calculate_data(data):
     return settings, areas, users
 
 
-users_db = [{'ocp_username': 'berzas', 'gitlab': 'berzas_berzas'},
-            {'ocp_username': 'IvanEsperanto', 'gitlab': 'kapis'}]
+users_db = [{'ocp': 'berzas', 'gitlab': 'berzas_berzas'},
+            {'ocp': 'IvanEsperanto', 'gitlab': 'kapis'},
+            {'redmine': 'Onix228', 'gitlab': 'coly_boubacar_d'}]
 
 special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
                    'thokon00': 'fK5F4k5KxyUnYKCsUVPUaDs7pAgfWoBxHH',
@@ -116,15 +117,17 @@ special_wallets = {'Sebastian': 'fcyrdjynkQzEBquGX7TmTvXodm2TQeAKDg',
 
 
 def get_unique_username(key=None, value=None):
-    if key == 'gitlab':
-        for u in users_db:
-            if value == u[key]:
-                return u['ocp_username']
-    if key == 'ocp_username':
-        for u in users_db:
-            if value == u[key]:
-                return u['gitlab']
-    return None
+    username = {}
+    for u in users_db:
+        if key in u and u[key] == value:
+            username = u
+            break
+
+    if key != 'redmine' and 'redmine' in username:
+        return 'redmine', username['redmine']
+    if key != 'ocp' and 'ocp' in username:
+        return 'ocp', username['ocp']
+    return None, None
 
 
 fixed_month_values = {
@@ -213,7 +216,7 @@ fixed_month_values = {
                     {'username': 'santi', 'fix_hours': 96, 'fix_income': 600, 'area': 'fairmarket'},
                     {'username': 'berzas', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
-                    {'username': 'al_demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+                    {'username': 'Al-Demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]}
 

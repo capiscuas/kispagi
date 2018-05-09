@@ -4,13 +4,15 @@
 import flask
 import traceback
 import logging
+import pickle
 from collections import defaultdict
-
+import os.path
 from utils import float2dec, _parse_calculate_data, FAIR2EUR_PRICE, special_wallets
 
 
 def calculate():
-
+    cache_kispagi_users = os.path.join('/tmp/', 'cache_kispagi_users.p')
+    all_users = pickle.load(open(cache_kispagi_users, "rb"))
     data = flask.request.get_json()
     alerts = []
     settings, areas, users = _parse_calculate_data(data)
@@ -52,14 +54,6 @@ def calculate():
             users[username]['fix-income'] += u['fix-income']
             users[username]['fixed_time'] += u['fix-hours'] * 3600
             total_payable_hours += u['payable_hours']
-
-    # in case a fixed income user hasn't logged any hour yet
-    # fixed_income_users = get_fixed_incomes(month=settings['month'])
-    # for u in fixed_income_users:
-    #     if u['username'] not in users:
-    #         users[username]['payable_hours'] = 0
-    #         users[username]['tasks_time'] = u['time'] + u['volunteer-hours'] * 3600
-    #         users[username]['fix-income'] = u['fix-income']
 
     if total_budget < total_fixed_incomes:
         alert = 'Total budget is not enough for the fixed incomes: {0}€ < {1}€'.format(
@@ -111,9 +105,9 @@ def calculate():
                         u['final_payment'] = final_payment
                         u['payment_detail'] = '<font color="red">{0}€</font>\
                                                <font color="blue">({1} ƒ)</font> = {2}'.format(
-                            final_payment,
-                            float2dec(final_payment / FAIR2EUR_PRICE),
-                            payment_detail)
+                                                                                        final_payment,
+                                                                                        float2dec(final_payment / FAIR2EUR_PRICE),
+                                                                                        payment_detail)
 
             # All users final payment calculated
             if max_hour_alert:
@@ -142,10 +136,9 @@ def calculate():
                 u['percentage'] = percentage
                 logging.debug('Percentage from total: {0}'.format(percentage))
 
-                if 'all_users' in globals():
-                    u.update(all_users[username])
-                    if username in special_wallets:
-                        u['ocp_faircoin_address'] = special_wallets[username]
+                u.update(all_users[username])
+                if username in special_wallets:
+                    u['faircoin_address'] = special_wallets[username]
 
                 user_total['fix-income'] += u['fix-income']
                 user_total['freelance_eur'] += u['freelance_eur']
@@ -153,6 +146,7 @@ def calculate():
                 user_total['fixed_time'] += u['fixed_time']
                 user_total['voluntary_time'] += u['voluntary_time']
                 user_total['tasks_time'] += u['tasks_time']
+                user_total['profile_url'] += u['tasks_time']
 
             # Adding the total row
             user_total['percentage'] = float2dec(100 * (user_total['final_payment'] / total_eur_to_pay))
@@ -183,8 +177,7 @@ def calculate():
             else:
                 money_left_msg = '{0}ƒ'.format(float2dec(results['faircoins_left']))
 
-        msg = """Calculation successful.<br/>
-                 Final Price/hour: {0}€<br/>
+        msg = """Final Price/hour: {0}€<br/>
                  Total budget: {1}€ / {2}ƒ<br/>
                  Total to pay: {3}€ / {4}ƒ<br/>
                  Total Left: {5}€ / {6}""".format(float2dec(price_hour),
