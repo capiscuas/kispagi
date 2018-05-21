@@ -64,7 +64,8 @@ app.add_url_rule('/calculate/', 'calculate', distribution.calculate, methods=['P
 @app.route('/')
 def index():
     alerts = []
-    month_param = flask.request.args.get('month', default='04-2018', type=str)
+    default_month = '05-2018'
+    next_month = '06-2018'
     fname = '{0}.html'.format(month_param)
     if os.path.isfile(os.path.join('templates', fname)):
         logging.debug('Found Results template {0}'.format(fname))
