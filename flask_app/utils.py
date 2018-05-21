@@ -214,6 +214,7 @@ fixed_month_values = {
                     {'username': 'berzas', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'Al-Demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+<<<<<<< HEAD
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]},
 
@@ -225,6 +226,8 @@ fixed_month_values = {
                     {'username': 'berzas', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'cegroj', 'fix_hours': 96, 'fix_income': 600, 'area': 'techarea'},
                     {'username': 'Al-Demon', 'fix_hours': 80, 'fix_income': 500, 'area': 'techarea'},
+=======
+>>>>>>> cf9e7fda79861157b935f053f591e00a640927db
                     {'username': 'michalis_kassapakis', 'fix_hours': 80, 'fix_income': 500, 'area': 'circulareconomy'},
                     {'username': 'pilikum_l_kerill', 'fix_hours': 48, 'fix_income': 300, 'area': 'communication'}]}
 
