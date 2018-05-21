@@ -18,7 +18,7 @@ Kispagi (which means to pay with kisses in Esperanto) is an app that connects to
     source venv/bin/activate
 
 ### Installing Requirements
-    pip install flask requests python-dateutil python-slugify
+    pip install flask requests python-dateutil python-slugify python2redmine
 
 ### Configuring settings
 Create an empty file at **env/__init__.py**

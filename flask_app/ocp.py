@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
+import os.path
 import requests
 
 
@@ -54,16 +55,17 @@ class OCPConnector(object):
             if email in self.server_email2username:
                 alias = self.server_email2username[email]
 
-        gitlab_username = self.parent.gitlab.server_users_emails.get(email, None)
-        if gitlab_username:
-            username = gitlab_username
-        else:
-            username = ocp_slug_username
+        # gitlab_username = self.parent.gitlab.server_users_emails.get(email, None)
+        # if gitlab_username:
+        #     username = gitlab_username
+        # else:
+        username = ocp_slug_username
         return username, email, alias
 
     def get_server_users(self):
         users2emails = {}
-        with open('env/ocp.users.json') as data_file:
+
+        with open(os.path.join(self.parent.dir_path, 'env', 'ocp.users.json')) as data_file:
             data = json.load(data_file)
 
         for user in data:
@@ -71,7 +73,7 @@ class OCPConnector(object):
             users2emails[user['api_url']] = email
             self.server_email2username[email] = user['username']
 
-        with open('env/ocp.agents.json') as data_file:
+        with open(os.path.join(self.parent.dir_path, 'env', 'ocp.agents.json')) as data_file:
             data = json.load(data_file)
 
         for agent in data:
@@ -113,14 +115,14 @@ class OCPConnector(object):
 
         return None
 
-    def parse_issues(self, issues, project_id, date_min, date_max):
+    def parse_issues(self, issues, area_name, project_id, date_min, date_max):
         contributions = []
         processes = issues["data"]["viewer"]["agent"]["agentProcesses"]
 
         ocp_users = {}
         for p in processes:
-            web_url = 'https://ocp.freedomcoop.eu/work/process-logging/{0}/'.format(p['id'])
-            contributors = set()
+            # Deprecated web_url = 'https://ocp.freedomcoop.eu/work/process-logging/{0}/'.format(p['id'])
+
             commitments = {}
 
             if CHECK_PROCESS_DATES:
@@ -168,7 +170,7 @@ class OCPConnector(object):
                         if username not in ocp_users:
                             user_faircoinaddress = i['provider']['faircoinAddress']
                             ocp_users[username] = {"ocp_username": username, "ocp_id": user_id,
-                                                   "ocp_faircoin_address": user_faircoinaddress,
+                                                   "faircoin_address": user_faircoinaddress,
                                                    "email": email, "ocp_alias": alias}
 
                         if validation._is_validated_comment(i['note']):
@@ -183,29 +185,22 @@ class OCPConnector(object):
                             if unit and (unit['name'] == 'Hour' or unit['name'] == 'Each') and hours > 0:
                                 seconds_spent = hours * 3600
 
-                                if i['requestDistribution']:
-                                    contributors.add(username)
                                 # if contribution not in this month, we ignore the time
                                 if date_min > date or date_max < date:
                                     continue
 
-                                i_title = ''
-                                if i['note']:
-                                    if len(i['note']) > 100:
-                                        i_title = i['note'][:100] + u'…'
-                                    else:
-                                        i_title = i['note']
-
-                                # Events are just informative to show in the popup window
-                                kispagi_validations = []
                                 validations = i.get('validations', [])
+                                kispagi_validations = []
                                 for v in validations:
                                     validator, email, alias = self.getUserDetails(v['validatedBy']["id"], v['validatedBy']["name"])
                                     validation_date = parse_date(v['validationDate'])
                                     kispagi_validations.append({'validator': validator, 'date': validation_date})
 
                                 c_title = commitments[commitment_id]['title']
-                                contributions.append({'id': i['id'],#'{}:{}'.format(p['id'], commitment_id),
+                                event_id = i['id']
+                                event_title = i.get('note', '')
+                                web_url = 'https://agent.fair.coop/#/validate/event/{0}'.format(event_id)
+                                contributions.append({'id': event_id,
                                                       'type': 'OCP',
                                                       'date': date_str,
                                                       'url': web_url,
@@ -213,8 +208,10 @@ class OCPConnector(object):
                                                       'validations': kispagi_validations,
                                                       'validation_msgs': [],
                                                       'validated': False,
-                                                      'task_title': p['name'],
-                                                      'task_comments': '{}:{}'.format(c_title, i_title),
+                                                      'area_name': area_name,
+                                                      'time_event_id': event_id,
+                                                      'task_title': u'{}:{}'.format(p['name'], c_title),
+                                                      'task_comments': event_title,
                                                       'total_time_spent': seconds_spent,
                                                       'username': username})
 
