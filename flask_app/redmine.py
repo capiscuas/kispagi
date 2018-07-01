@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import requests
-from dateutil.parser import parse
-from slugify import slugify
+# from dateutil.parser import parse
+# import requests
+# from slugify import slugify
 from redminelib import Redmine
-
 from utils import get_unique_username
 from validation import _is_validated_comment
 
@@ -80,7 +79,8 @@ class RedmineConnector(object):
                 validations = []
                 if not is_voluntary:
                     for j in entry.issue.journals:
-                        if _is_validated_comment(j.notes):
+                        # print(j.notes)
+                        if hasattr(j, 'notes') and _is_validated_comment(j.notes):
                             validator = self.server_users_ids[j.user.id]
                             validations.append({'validator': validator, 'date': j.created_on})
 

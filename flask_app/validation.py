@@ -25,10 +25,10 @@ validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD'
 
 
 def _is_validated_comment(comment):
-    if comment:
-        comment = comment.replace("#", "").replace(".", "").replace(",", "").strip()
-        if comment.split():
-            first_word = comment.split()[0]
-            return first_word.upper() in validated_strings
-
-    return False
+    return 'VALIDATED' in comment.upper()
+    #     comment = comment.replace("#", "").replace(".", "").replace(",", "").replace("<p>", "").replace("</p>", "").strip()
+    #     if comment.split():
+    #         first_word = comment.split()[0]
+    #         return first_word.upper() in validated_strings
+    #
+    # return False

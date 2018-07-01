@@ -210,11 +210,7 @@ class OCPConnector(object):
                                                       'validated': False,
                                                       'area_name': area_name,
                                                       'time_event_id': event_id,
-<<<<<<< HEAD
                                                       'task_title': u'{}:{}'.format(p['name'], c_title),
-=======
-                                                      'task_title': '{}:{}'.format(p['name'], c_title),
->>>>>>> cf9e7fda79861157b935f053f591e00a640927db
                                                       'task_comments': event_title,
                                                       'total_time_spent': seconds_spent,
                                                       'username': username})
