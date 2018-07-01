@@ -54,8 +54,8 @@ def index():
         pass
 
     alerts = []
-    default_month = '05-2018'
-    next_month = '06-2018'
+    default_month = '06-2018'
+    next_month = '07-2018'
     month_param = flask.request.args.get('month', default=default_month, type=str)
     if month_param == 'next':
         month_param = next_month
@@ -222,7 +222,7 @@ def index():
 
     settings['cache_latest_time'] = cache_latest_time
     settings['cache_default_time_refresh'] = cache_default_time_refresh
-    alerts.append({'type': 'warning', 'msg': 'Next OCW assembly: 11th of June at 19h00(CEST). Make sure to validate your work before that day.'})
+    alerts.append({'type': 'warning', 'msg': 'Next OCW assembly: 9th of July at 19h00(CEST). Make sure to validate your work before that day.'})
 
     return flask.render_template('index.html', settings=settings, areas=areas, alerts=alerts)
 
