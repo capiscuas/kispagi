@@ -96,7 +96,7 @@ def index():
     areas_cache = None
     all_time_events_cache = None
 
-    cache_default_time_refresh = 10
+    cache_default_time_refresh = 15
     now = datetime.now()
 
     force_cache_refresh = flask.request.args.get('cache', default=False, type=bool)
