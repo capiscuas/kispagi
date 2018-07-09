@@ -198,8 +198,9 @@ class OCPConnector(object):
 
                                 c_title = commitments[commitment_id]['title']
                                 event_id = i['id']
+                                plan_id = p['id']
                                 event_title = i.get('note', '')
-                                web_url = 'https://agent.fair.coop/#/validate/event/{0}'.format(event_id)
+                                web_url = 'https://agent.fair.coop/canvas/{0}/validate'.format(plan_id)
                                 contributions.append({'id': event_id,
                                                       'type': 'OCP',
                                                       'date': date_str,
