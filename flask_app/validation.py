@@ -24,6 +24,14 @@ def calculate(username, validations):
 validated_strings = ['VALIDATED', 'VLIDATED', 'VALIDATE', 'VALIDADO', 'VALIDATD', 'VLALIDATED']
 
 
+def _is_validated_status(details):
+    VALIDATED_STATUSES = ['7', '8']  # those are the status VALIDATED and VALIDATED+ that can alternate
+    for d in details:
+        if 'name' in d and d['name'] == 'status_id' and 'new_value' in d and d['new_value'] in VALIDATED_STATUSES:
+            return True
+    return False
+
+
 def _is_validated_comment(comment):
     return 'VALIDATED' in comment.upper()
     #     comment = comment.replace("#", "").replace(".", "").replace(",", "").replace("<p>", "").replace("</p>", "").strip()

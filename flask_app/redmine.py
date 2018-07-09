@@ -7,7 +7,7 @@ import logging
 # from slugify import slugify
 from redminelib import Redmine
 from utils import get_unique_username
-from validation import _is_validated_comment
+from validation import _is_validated_comment, _is_validated_status
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -77,12 +77,16 @@ class RedmineConnector(object):
                 entry.issue.refresh()
                 is_voluntary = entry.custom_fields[0].value == '1'
                 validations = []
+                validators = []
                 if not is_voluntary:
                     for j in entry.issue.journals:
-                        # print(j.notes)
-                        if hasattr(j, 'notes') and _is_validated_comment(j.notes):
-                            validator = self.server_users_ids[j.user.id]
-                            validations.append({'validator': validator, 'date': j.created_on})
+                        if j.created_on > entry.updated_on:
+                            if hasattr(j, 'details') and (_is_validated_status(j.details) or _is_validated_comment(j.notes)):
+                                validator = self.server_users_ids[j.user.id]
+
+                                if not validator == 'admin' and validator not in validators:
+                                    validations.append({'validator': validator, 'date': j.created_on})
+                                    validators.append(validator)
 
                 issue_url = '{0}issues/{1}'.format(redmine_host, issue_id)
                 contributions.append({'id': issue_id,
