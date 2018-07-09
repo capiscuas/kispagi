@@ -21,7 +21,7 @@ Kispagi (which means to pay with kisses in Esperanto) is an app that connects to
     pip install flask requests python-dateutil python-slugify python2redmine
 
 ### Configuring settings
-Create an empty file at **env/__init__.py**
+Create an empty file at **env/\_\_init\_\_.py**
 
 Create a file **env/settings.py** which will contain the following content:
 
